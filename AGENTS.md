@@ -63,12 +63,18 @@ docs/                         the longer explanations
 - **Skills are a list, not files.** Third-party skills go in
   `.chezmoidata/skills.yaml`; never commit their folders. `save` rewrites
   the list from `~/.agents/.skill-lock.json`. See `docs/claude-code.md`.
+- **macOS settings** are `defaults write` lines in
+  `.chezmoiscripts/run_onchange_after_60-macos-defaults.sh.tmpl`; it re-runs
+  when edited.
 - **Line endings:** `.gitattributes` forces LF on shell files and CRLF on
   PowerShell. `*.age` is binary to git.
 
 ## Agents
 
-- **Claude Code is primary.** Its config is `home/dot_claude/settings.json`.
+- **Claude Code is primary.** Its config is `home/dot_claude/settings.json`;
+  the rules for every project are `home/dot_claude/AGENTS.md`, with
+  `~/.claude/CLAUDE.md` linking to it (`symlink_CLAUDE.md`), and opencode
+  loads the same file.
   `~/.claude.json` is app state and is never managed. Claude writes to
   `settings.json` through the symlink, so keep generic permissions and drop
   one-off ones before committing. See `docs/claude-code.md`.

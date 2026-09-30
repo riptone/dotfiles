@@ -17,14 +17,21 @@ Want `claude` in a terminal too? Add `claude-code@latest` to the brew casks
 
 ```
 home/dot_claude/settings.json  ->  ~/.claude/settings.json   (a symlink)
+home/dot_claude/AGENTS.md      ->  ~/.claude/AGENTS.md       (global instructions)
+                                   ~/.claude/CLAUDE.md       (-> AGENTS.md)
 ```
 
 chezmoi manages files, not directories, so `~/.claude` stays a real
 directory full of Claude's own state (sessions, projects, plugin caches,
 auto-memory), and none of that comes near this repo.
 
+`AGENTS.md` holds the rules for every project (run the gate, never push
+without asking, no paid services, Bun and Biome). A project's own file wins
+where they disagree. `CLAUDE.md` is a symlink to it, and opencode loads it
+through `instructions`.
+
 Other user-authored config can be added the same way, with
-`chezmoi add ~/.claude/CLAUDE.md` (or `agents/`, `output-styles/`).
+`chezmoi add ~/.claude/agents/...` (or `output-styles/`).
 Skills you write yourself could go there too; third-party ones are
 installed from a list (below). Never add `~/.claude.json`: it's app state, holding
 OAuth, trust decisions and per-project data.

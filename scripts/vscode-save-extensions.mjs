@@ -24,9 +24,11 @@ const list = (xs, indent) => xs.map((x) => `${indent}- ${x}\n`).join("")
 let yaml = fs.readFileSync(yamlPath, "utf8")
 const defaults = ids(path.join(os.homedir(), ".vscode", "extensions", "extensions.json"))
 yaml = yaml.replace(/(\n  extensions:[^\n]*\n)(?:    - [^\n]*\n)*/, `$1${list(defaults, "    ")}`)
-for (const m of [...yaml.matchAll(/\n      location: "([^"]+)"/g)]) {
-  const exts = ids(path.join(user, "profiles", m[1], "extensions.json"))
-  const at = yaml.indexOf("\n      extensions:\n", m.index)
+// Look each profile up again after every splice: a list that changed length
+// shifts everything after it, so offsets from before the splice are stale.
+for (const [, loc] of [...yaml.matchAll(/\n      location: "([^"]+)"/g)]) {
+  const exts = ids(path.join(user, "profiles", loc, "extensions.json"))
+  const at = yaml.indexOf("\n      extensions:\n", yaml.indexOf(`\n      location: "${loc}"`))
   const start = at + "\n      extensions:\n".length
   let end = start
   while (yaml.startsWith("        - ", end)) end = yaml.indexOf("\n", end) + 1

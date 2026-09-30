@@ -29,6 +29,11 @@
    real files, readable only by you.
 6. **Git hooks, first run only.** `run_once_after_30-githooks.*` turns on
    `.githooks/pre-commit` (a gitleaks scan) for this checkout.
+7. **VS Code extensions and agent skills**, whenever their lists change
+   (`run_onchange_after_40-*`, `50-*`).
+8. **macOS settings** (Dock, Finder, dark mode), whenever
+   `run_onchange_after_60-macos-defaults.sh.tmpl` changes. Edit that file to
+   change one.
 
 ## Reading the file names
 
@@ -95,6 +100,7 @@ caches, `node_modules`) never comes near this repo.
 | To... | Do |
 |---|---|
 | Change a config | Edit it, then `save` |
+| Change a macOS setting | Edit `run_onchange_after_60-macos-defaults.sh.tmpl`, then `cz apply` |
 | Add a tool | Add a line to `packages.yaml`, then `cz apply` and `save` |
 | Change a secret | `cz edit ~/.doti/dbhub.toml` (opens VS Code), then `save` |
 | Update everything | `up` (topgrade: brew, winget, npm, VS Code extensions, skills, then `chezmoi update`) |

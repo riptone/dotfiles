@@ -90,3 +90,43 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - run: diff CLAUDE.md AGENTS.md
+      # The global one too: ~/.claude/CLAUDE.md must link to its AGENTS.md.
+      - run: test "$(cat home/dot_claude/symlink_CLAUDE.md)" = AGENTS.md
+
+  save-scripts:
+    name: save's list rewriters keep the YAML valid
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+
+      # `save` rewrites skills.yaml and vscode.yaml with string splicing.
+      # Feed both scripts a fake home, then check that chezmoi still parses
+      # the data and reads back exactly what the fake home holds.
+      - name: Run both against a fake home
+        shell: bash
+        run: |
+          sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+          export PATH="$HOME/.local/bin:$PATH"
+          fake="$RUNNER_TEMP/fakehome"
+          mkdir -p "$fake/.agents" "$fake/.vscode/extensions"
+          printf '%s' '{"version":3,"skills":{"b-skill":{"source":"o/r"},"a-skill":{"source":"o/r"},"c-skill":{"source":"x/y"}}}' > "$fake/.agents/.skill-lock.json"
+          printf '%s' '[{"identifier":{"id":"pub.default"}}]' > "$fake/.vscode/extensions/extensions.json"
+          for loc in $(grep -oP '^\s+location: "\K[^"]+' home/.chezmoidata/vscode.yaml); do
+            mkdir -p "$fake/.config/Code/User/profiles/$loc"
+            printf '[{"identifier":{"id":"pub.%s"}},{"identifier":{"id":"pub.%s"}}]' "$loc" "$loc" > "$fake/.config/Code/User/profiles/$loc/extensions.json"
+          done
+          HOME="$fake" node scripts/skills-save.mjs
+          HOME="$fake" node scripts/vscode-save-extensions.mjs
+          git diff --stat
+
+          chezmoi init --source "$GITHUB_WORKSPACE" --no-tty
+          skills=$(chezmoi execute-template '{{ .skills | toJson }}')
+          test "$skills" = '{"o/r":["a-skill","b-skill"],"x/y":["c-skill"]}' || { echo "skills: $skills"; exit 1; }
+          test "$(chezmoi execute-template '{{ .vscode.extensions | toJson }}')" = '["pub.default"]'
+          chezmoi execute-template '{{ range .vscode.profiles }}{{ .location }}={{ .extensions | toJson }}{{ "\n" }}{{ end }}' |
+            while IFS='=' read -r loc exts; do
+              test "$exts" = "[\"pub.$loc\"]" || { echo "profile $loc: $exts"; exit 1; }
+            done

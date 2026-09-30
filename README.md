@@ -65,7 +65,7 @@ home/                         everything that lands in $HOME
   .chezmoiscripts/            package installs, age key, git hooks
   dot_zshrc, dot_zprofile, dot_zsh/
   dot_gitconfig, dot_config/git/
-  dot_claude/settings.json    Claude Code
+  dot_claude/                 Claude Code: settings.json, global AGENTS.md (CLAUDE.md links to it)
   modify_dot_claude.json      adds the MCP servers (mcp.yaml) to ~/.claude.json
   dot_config/opencode/        opencode
   dot_config/ghostty/, dot_config/starship.toml
@@ -91,7 +91,8 @@ installs what's new.
 - **Font:** JetBrainsMono Nerd Font
 
 VS Code settings, profiles and extensions **are** managed here (its own
-Settings Sync is off); Brave uses Brave Sync.
+Settings Sync is off); Brave uses Brave Sync. macOS settings (Dock, Finder,
+dark mode) are a script of `defaults write` lines.
 
 ## Docs
 

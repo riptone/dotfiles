@@ -146,6 +146,7 @@
     }
   },
   "instructions": [
+    "~/.claude/AGENTS.md",
     "~/.config/opencode/caveman-default.md",
     "Assume CI=true. No editors/pagers. Use yes/force flags always. Git: -m, --no-edit, --no-pager. No interactive: vim, nano, less, more, man."
   ],

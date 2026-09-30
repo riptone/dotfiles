@@ -1,0 +1,30 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+# macOS settings, read from this Mac and replayed on a new one. Re-runs
+# whenever this file changes. Change a setting in System Settings, find its
+# key with `defaults read <domain>`, and add or edit the line here.
+set -uo pipefail
+echo "==> macOS defaults"
+
+# Appearance: dark mode (takes full effect after logging out and back in).
+defaults write NSGlobalDomain AppleInterfaceStyle -string Dark
+
+# Dock: autohide, no recent apps, smaller icons.
+defaults write com.apple.dock autohide -bool true
+defaults write com.apple.dock show-recents -bool false
+defaults write com.apple.dock tilesize -int 50
+
+# Finder: show every file extension, column view, search the current folder,
+# no warning when changing an extension, new windows open Downloads.
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+defaults write com.apple.finder FXPreferredViewStyle -string clmv
+defaults write com.apple.finder FXDefaultSearchScope -string SCcf
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+defaults write com.apple.finder NewWindowTarget -string PfLo
+defaults write com.apple.finder NewWindowTargetPath -string "file://$HOME/Downloads/"
+
+# Window tiling: no gaps between tiled windows.
+defaults write com.apple.WindowManager EnableTiledWindowMargins -bool false
+
+killall Dock Finder >/dev/null 2>&1 || true
+{{ end -}}

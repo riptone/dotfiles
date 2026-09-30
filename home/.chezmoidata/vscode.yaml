@@ -36,6 +36,7 @@ vscode:
         - thimo.integrated-browser-mcp
         - tomoki1207.pdf
         - usernamehw.errorlens
+        - vitest.explorer
     - name: Work
       location: "-1f17a7bd"
       icon: briefcase

@@ -121,5 +121,4 @@
   "browserBridge.autoStart": false,
   "claudeCode.hideOnboarding": true,
   "diffEditor.hideUnchangedRegions.enabled": true,
-  "claudeCode.initialPermissionMode": "bypassPermissions",
 }
