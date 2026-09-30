@@ -1,0 +1,23 @@
+# .zprofile — login shell config (managed by chezmoi)
+
+# Homebrew — detect the prefix instead of assuming Apple Silicon, so Intel Macs
+# (/usr/local) and Linuxbrew (/home/linuxbrew) get brew on PATH too.
+for _brew in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+  [ -x "$_brew" ] && eval "$("$_brew" shellenv)" && break
+done
+unset _brew
+
+# Homebrew: no surprise auto-update or cleanup on every install.
+# (The non-interactive vars for agents - GIT_EDITOR=true, PAGER=cat, ... -
+# live in claude/.claude/settings.json "env", so they apply to Claude's
+# commands and not to this shell.)
+export HOMEBREW_NO_AUTO_UPDATE=1
+export HOMEBREW_NO_INSTALL_CLEANUP=1
+export HOMEBREW_NO_ENV_HINTS=1
+
+# User-level binaries (Claude Code's native installer on Linux, pipx, ...).
+export PATH="$HOME/.local/bin:$PATH"
+
+# Added by OrbStack: command-line tools and integration
+# This won't be added again if you remove it.
+source ~/.orbstack/shell/init.zsh 2>/dev/null || :

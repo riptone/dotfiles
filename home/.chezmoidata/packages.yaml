@@ -1,0 +1,57 @@
+# Everything installed on a machine. Read by .chezmoiscripts/*packages*;
+# editing this file makes the next `chezmoi apply` re-run the install.
+packages:
+  # macOS + Linux, via Homebrew (`brew bundle`, never upgrades on install -
+  # `brew upgrade` is where upgrades live).
+  brew:
+    formulae:
+      - git
+      - curl
+      - node
+      - bun
+      - gh            # also how the age key is fetched (a secret gist)
+      - gitleaks      # the pre-commit secret scan (.githooks/pre-commit)
+      - fd
+      - fzf
+      - zoxide
+      - starship
+      - rtk           # wired into Claude by the `rtk hook claude` hook
+      - topgrade      # `up`: updates everything below in one go
+      - anomalyco/tap/opencode   # the tap: homebrew-core lags upstream
+      - zsh-autosuggestions
+      - zsh-fast-syntax-highlighting
+    # macOS only. Casks don't self-update: `brew upgrade --cask`.
+    casks:
+      - ghostty
+      - visual-studio-code
+      - brave-browser
+      - font-jetbrains-mono-nerd-font
+      - hiddenbar
+      - claude-code@latest   # the rolling channel, like autoUpdatesChannel
+  # Windows, via winget.
+  winget:
+    - Git.Git
+    - cURL.cURL
+    - OpenJS.NodeJS
+    - Oven-sh.Bun
+    - GitHub.cli
+    - Gitleaks.Gitleaks
+    - sharkdp.fd
+    - junegunn.fzf
+    - ajeetdsouza.zoxide
+    - Starship.Starship
+    - rtk-ai.rtk
+    - topgrade-rs.topgrade
+    - Anthropic.ClaudeCode
+    - Microsoft.PowerShell
+    - Microsoft.WindowsTerminal
+    - Microsoft.VisualStudioCode
+    - Brave.Brave
+    - DEVCOM.JetBrainsMonoNerdFont
+  # Windows: `bun install -g`. opencode's winget package lags upstream.
+  bun:
+    - opencode-ai
+  # Every OS: `npm install -g`. MCP servers, installed globally so no agent
+  # pays an npx registry round trip on startup.
+  npm:
+    - "@bytebase/dbhub"

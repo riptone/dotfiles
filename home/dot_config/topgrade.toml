@@ -1,0 +1,19 @@
+# topgrade: `topgrade` (alias `up`) updates everything this repo installs.
+# macOS/Linux read this at ~/.config/topgrade.toml; Windows reads
+# %APPDATA%\topgrade.toml, which links here.
+[misc]
+# Only these steps. Without `only`, topgrade runs every step it can detect,
+# including OS updates that want sudo and tools this repo doesn't manage.
+only = [
+  "brew_formula",  # formulae (macOS/Linux)
+  "brew_cask",     # casks; Ghostty, VS Code and Brave update themselves
+  "winget",        # Windows
+  "node",          # npm -g: the MCP servers (dbhub)
+  "bun_packages",  # bun -g: opencode on Windows
+  "vscode",        # VS Code extensions
+  "skills",        # agent skills in ~/.agents/skills
+  "chezmoi",       # chezmoi update: pull this repo, then apply it
+]
+cleanup = true
+# brew or winget upgrades topgrade itself.
+no_self_update = true

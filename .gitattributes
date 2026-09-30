@@ -1,15 +1,17 @@
 # Normalize line endings in the repo instead of relying on each machine's
-# core.autocrlf. Critical here: install.sh / bootstrap.sh MUST stay LF or they
-# break when a Windows clone (core.autocrlf=true) would otherwise add CRLF.
+# core.autocrlf. Shell files MUST stay LF or they break when a Windows clone
+# (core.autocrlf=true) would otherwise add CRLF.
 
 * text=auto eol=lf
 
-# Shell scripts: always LF.
-*.sh    text eol=lf
-bootstrap.sh text eol=lf
+# Shell scripts and git hooks: always LF.
+*.sh      text eol=lf
+*.sh.tmpl text eol=lf
+.githooks/* text eol=lf
 
 # PowerShell / batch: CRLF is safest for native Windows tooling.
 *.ps1   text eol=crlf
+*.ps1.tmpl text eol=crlf
 *.psm1  text eol=crlf
 *.psd1  text eol=crlf
 *.cmd   text eol=crlf
@@ -22,6 +24,8 @@ bootstrap.sh text eol=lf
 *.json  text eol=lf
 *.jsonc text eol=lf
 *.toml  text eol=lf
-.zshrc      text eol=lf
-.zprofile   text eol=lf
-.gitconfig  text eol=lf
+dot_zshrc     text eol=lf
+dot_zprofile  text eol=lf
+dot_gitconfig text eol=lf
+# Encrypted secrets are ASCII-armored; never let a checkout touch them.
+*.age -text

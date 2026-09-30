@@ -1,0 +1,36 @@
+{{- /*
+  Registers the profiles from .chezmoidata/vscode.yaml in VS Code's
+  globalStorage/storage.json, a state file VS Code rewrites constantly, so
+  only userDataProfiles is touched. Called from each OS's modify_storage.json
+  with (dict "stdin" .chezmoi.stdin "data" .). Returns the file unchanged,
+  byte for byte, when every profile is already registered.
+*/ -}}
+{{- $current := dict -}}
+{{- if .stdin | trim -}}
+{{-   $current = fromJson .stdin -}}
+{{- end -}}
+{{- $have := list -}}
+{{- if hasKey $current "userDataProfiles" -}}
+{{-   $have = $current.userDataProfiles -}}
+{{- end -}}
+{{- $locations := list -}}
+{{- range $have -}}
+{{-   $locations = append $locations .location -}}
+{{- end -}}
+{{- $profiles := $have -}}
+{{- $changed := false -}}
+{{- range .data.vscode.profiles -}}
+{{-   if not (has .location $locations) -}}
+{{-     $entry := dict "location" .location "name" .name "icon" .icon -}}
+{{-     if hasKey . "useDefaultFlags" -}}
+{{-       $entry = set $entry "useDefaultFlags" .useDefaultFlags -}}
+{{-     end -}}
+{{-     $profiles = append $profiles $entry -}}
+{{-     $changed = true -}}
+{{-   end -}}
+{{- end -}}
+{{- if and (not $changed) (.stdin | trim) -}}
+{{ .stdin }}
+{{- else -}}
+{{ toPrettyJson (set $current "userDataProfiles" $profiles) }}
+{{ end -}}

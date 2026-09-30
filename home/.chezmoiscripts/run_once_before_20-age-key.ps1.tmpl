@@ -1,0 +1,35 @@
+{{- if eq .chezmoi.os "windows" -}}
+# Puts the age key in place, once per machine, before chezmoi decrypts the
+# encrypted_ files. The key is key.txt.age in a secret gist on your account,
+# itself encrypted with a passphrase. The gist is found through your `gh`
+# login, so its URL is never written anywhere public - reading the secrets
+# takes both that login and the passphrase.
+$ErrorActionPreference = 'Stop'
+$key = {{ .chezmoi.config.age.identity | quote }}
+if (Test-Path $key) { exit 0 }
+
+gh auth status *> $null
+if ($LASTEXITCODE -ne 0) { gh auth login }
+$tmp = New-TemporaryFile
+try {
+    # JSON is parsed here rather than with gh's --jq: Windows PowerShell 5 and
+    # PowerShell 7.3+ pass embedded double quotes to native commands
+    # differently, and the filter would break on one of them.
+    $gist = gh api gists --paginate --jq '.[]' |
+        ForEach-Object { $_ | ConvertFrom-Json } |
+        Where-Object { $_.files.PSObject.Properties.Name -contains 'key.txt.age' } |
+        Select-Object -First 1
+    if (-not $gist) { throw 'No gist with key.txt.age on this gh account - see docs/secrets.md' }
+    $full = (gh api "gists/$($gist.id)") -join "`n" | ConvertFrom-Json
+    $armored = $full.files.'key.txt.age'.content
+    if (-not $armored) { throw 'could not read key.txt.age from the gist' }
+    # Written with LF and no BOM: `>` in Windows PowerShell 5 would write
+    # UTF-16, which age's armor reader rejects.
+    [IO.File]::WriteAllText($tmp, ($armored.TrimEnd() + "`n"))
+    New-Item -ItemType Directory -Force -Path (Split-Path $key) | Out-Null
+    Write-Host '==> Decrypting the age key (your passphrase)'
+    & {{ .chezmoi.executable | quote }} age decrypt --passphrase --output $key $tmp
+} finally {
+    Remove-Item -LiteralPath $tmp -Force
+}
+{{ end -}}

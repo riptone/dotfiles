@@ -1,0 +1,15 @@
+# MCP servers for Claude Code, merged into ~/.claude.json by
+# home/modify_dot_claude.json.tmpl. Each server's npm package goes in
+# packages.yaml under `npm`. opencode has its own copy in opencode.jsonc
+# ("mcp"), because that file stays a plain symlink its plugins can edit.
+mcpServers:
+  dbhub:
+    # One server for every database in ~/.doti/dbhub.toml (a secret).
+    # dbhub expands the ~ itself, so this is the same on every OS.
+    type: stdio
+    command: dbhub
+    args:
+      - --transport
+      - stdio
+      - --config=~/.doti/dbhub.toml
+    env: {}

@@ -1,0 +1,9 @@
+#!/bin/sh
+# Blocks a commit that stages a credential. The repo is public, and CI's
+# gitleaks only runs after the push - by then the secret is already out.
+# Enabled per checkout by .chezmoiscripts/*githooks* (core.hooksPath).
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "pre-commit: gitleaks is not installed - this commit was NOT scanned for secrets" >&2
+  exit 0
+fi
+exec gitleaks git --pre-commit --staged --redact --no-banner

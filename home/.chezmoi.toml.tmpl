@@ -1,0 +1,32 @@
+{{- /*
+  chezmoi's own config. `chezmoi init` renders this into
+  ~/.config/chezmoi/chezmoi.toml on each machine; re-run `chezmoi init`
+  after editing it.
+*/ -}}
+# Configs are symlinks into the repo, so edits made by the apps themselves
+# (Claude's /config, opencode's /versions) land in the working tree and show
+# up in `git diff`. Templates, encrypted and private files are still written
+# as real files - chezmoi can't symlink something it has to render.
+mode = "symlink"
+
+# Wherever `chezmoi init` cloned (or was pointed at) this repo.
+sourceDir = {{ .chezmoi.workingTree | quote }}
+
+encryption = "age"
+[age]
+  # Decrypted once per machine by .chezmoiscripts/*age-key*, from a secret
+  # gist on your account holding key.txt.age. The recipient is the public
+  # half; it is safe to commit.
+  identity = {{ joinPath .chezmoi.homeDir ".config" "chezmoi" "key.txt" | quote }}
+  recipient = "age1hhygtegmwyemqa2vk0n7dl0nzys54xyufayvy0qle6rvtfzr0glszytm6p"
+
+[diff]
+  exclude = ["scripts"]
+
+# `chezmoi add`, `re-add` and `edit` commit and push by themselves, so
+# saving the encrypted Work settings is one command. (Plain edits through a
+# symlink don't go through chezmoi: commit those as usual.) The pre-commit
+# gitleaks hook still runs on these commits.
+[git]
+  autoCommit = true
+  autoPush = true

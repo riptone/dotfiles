@@ -1,0 +1,16 @@
+# Target paths chezmoi must not manage. A template: evaluated per machine.
+**/.DS_Store
+
+{{ if eq .chezmoi.os "windows" }}
+.zshrc
+.zprofile
+.zsh
+.config/ghostty
+{{ else }}
+AppData
+Documents
+{{ end }}
+
+{{ if ne .chezmoi.os "darwin" }}
+Library
+{{ end }}

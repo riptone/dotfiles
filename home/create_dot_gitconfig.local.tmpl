@@ -1,0 +1,10 @@
+# Machine-local git config, included from ~/.gitconfig. chezmoi creates it
+# once and never overwrites it, so a per-machine user.email belongs here.
+[credential]
+{{- if eq .chezmoi.os "darwin" }}
+	helper = osxkeychain
+{{- else if eq .chezmoi.os "windows" }}
+	helper = manager
+{{- else }}
+	helper = cache --timeout=3600
+{{- end }}

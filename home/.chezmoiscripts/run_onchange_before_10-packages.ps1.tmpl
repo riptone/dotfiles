@@ -1,0 +1,27 @@
+{{- if eq .chezmoi.os "windows" -}}
+# Installs everything in .chezmoidata/packages.yaml. chezmoi re-runs this
+# whenever the rendered script changes - that is, whenever the list does.
+$ErrorActionPreference = 'Stop'
+
+$ids = @(
+{{- range $i, $id := .packages.winget }}{{ if $i }},{{ end }}
+    {{ $id | quote }}
+{{- end }}
+)
+foreach ($id in $ids) {
+    winget list --id $id --exact --accept-source-agreements *> $null
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "==> winget install $id"
+        winget install --id $id --exact --silent --accept-package-agreements --accept-source-agreements
+    }
+}
+
+# winget changes PATH for new shells only; pick it up for the rest of this one.
+$env:PATH = [Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
+            [Environment]::GetEnvironmentVariable('PATH', 'User')
+
+Write-Host '==> bun install -g'
+bun install -g{{ range .packages.bun }} {{ . | quote }}{{ end }}
+Write-Host '==> npm install -g'
+npm install -g{{ range .packages.npm }} {{ . | quote }}{{ end }}
+{{ end -}}

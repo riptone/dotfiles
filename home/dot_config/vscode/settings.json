@@ -1,0 +1,25 @@
+{
+  "github.copilot.nextEditSuggestions.enabled": true,
+  "workbench.startupEditor": "none",
+  "workbench.layoutControl.enabled": false,
+  "chat.tips.enabled": false,
+  "update.showReleaseNotes": false,
+  "window.newWindowProfile": "Home",
+  "chat.editing.confirmEditRequestRemoval": false,
+  "webnative.packageManager": "npm",
+  "security.workspace.trust.untrustedFiles": "open",
+  "workbench.settings.applyToAllProfiles": [
+    "git.blame.statusBarItem.enabled"
+  ],
+  "window.customTitleBarVisibility": "auto",
+  "window.menuStyle": "custom",
+  "window.dialogStyle": "custom",
+  "window.controlsStyle": "custom",
+  "window.menuBarVisibility": "compact",
+  "window.systemColorTheme": "dark",
+  "agents.voice.language": "pt",
+  "telemetry.telemetryLevel": "off",
+  "agents.voice.handsFree": false,
+  "workbench.browser.searchEngine": "duckduckgo",
+  "mssql.openQueryResultsInTabByDefaultDoNotShowPrompt": true,
+}

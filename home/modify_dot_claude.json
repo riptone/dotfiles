@@ -1,0 +1,33 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /*
+  ~/.claude.json is Claude's own state file (logins, projects, trust
+  decisions), so it is never managed whole. This template takes the current
+  file, sets mcpServers.<name> for each server in .chezmoidata/mcp.yaml, and
+  leaves every other key alone. Servers added by hand (`claude mcp add`)
+  survive.
+
+  When everything is already in place it returns the file unchanged, byte
+  for byte, so a routine `chezmoi apply` never rewrites it.
+*/ -}}
+{{- $current := dict -}}
+{{- if .chezmoi.stdin | trim -}}
+{{-   $current = fromJson .chezmoi.stdin -}}
+{{- end -}}
+{{- $have := dict -}}
+{{- if hasKey $current "mcpServers" -}}
+{{-   $have = $current.mcpServers -}}
+{{- end -}}
+{{- $upToDate := true -}}
+{{- range $name, $server := .mcpServers -}}
+{{-   if not (and (hasKey $have $name) (eq (toJson (get $have $name)) (toJson $server))) -}}
+{{-     $upToDate = false -}}
+{{-   end -}}
+{{- end -}}
+{{- if and $upToDate (.chezmoi.stdin | trim) -}}
+{{ .chezmoi.stdin }}
+{{- else -}}
+{{-   range $name, $server := .mcpServers -}}
+{{-     $current = setValueAtPath (printf "mcpServers.%s" $name) $server $current -}}
+{{-   end -}}
+{{ toPrettyJson $current }}
+{{ end -}}

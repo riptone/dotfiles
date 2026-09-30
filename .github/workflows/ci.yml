@@ -5,17 +5,9 @@ on:
     branches: [main]
   pull_request:
 
-# This repository is data now: stow packages and a manifest. The installer
-# that used to live here - scripts/install.sh, scripts/Install.ps1,
-# scripts/Main.ps1 and the two bootstraps, 2,815 lines between them - is one
-# Go binary, `doti`, in the tone.rip monorepo. That monorepo's CI builds it,
-# tests it, and parses *this* manifest as part of its own suite, so there is
-# nothing left here to smoke-test on three operating systems.
-#
-# What is left is what only this repository can check.
 jobs:
   secrets:
-    name: No credentials in the tree
+    name: No plaintext credentials in the tree
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -24,98 +16,77 @@ jobs:
           # in the most recent commit is still found in the commit before it.
           fetch-depth: 0
 
-      # The control that matters most here, and the one that was missing.
-      # Every config in this repository is symlinked into $HOME on every
-      # machine, so a secret committed here is a secret on all of them - and
-      # `git add -A` in a directory full of config files is how it happens.
+      # The repo is public and every file under home/ lands in $HOME on every
+      # machine. Encrypted secrets (home/**/encrypted_*.age) are ciphertext
+      # to a random age key and don't match any rule; a plaintext one would.
       - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  manifest:
-    name: manifest.jsonc parses and matches its schema
-    runs-on: ubuntu-latest
+  apply:
+    name: chezmoi apply (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
 
-      # doti reads this file with a real JWCC parser. This is a cheaper
-      # version of the same question - "is it still parseable, and does it
-      # still have the keys the installer indexes into" - so a broken
-      # manifest fails here rather than on somebody's new laptop.
-      #
-      # Comments are stripped with a string-aware scanner, not a regex: the
-      # file contains a URL, and `//` inside a string is not a comment. That
-      # exact line silently truncated a value once.
-      - name: Parse it
+      # The real thing, not a model of it: init renders .chezmoi.toml.tmpl,
+      # apply renders every template and .chezmoiignore for this OS and
+      # writes the result into a scratch home, verify checks it landed.
+      # Scripts (package installs) and encrypted files (no key here) are
+      # the two things left out.
+      - name: Apply into a scratch home (macOS, Linux)
+        if: runner.os != 'Windows'
+        shell: bash
         run: |
-          python3 - <<'PY'
-          import json, os, re, sys
+          sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+          export PATH="$HOME/.local/bin:$PATH"
+          dest="$RUNNER_TEMP/home"; mkdir -p "$dest"
+          chezmoi init --source "$GITHUB_WORKSPACE" --no-tty
+          chezmoi apply --destination "$dest" --exclude scripts,encrypted --no-tty
+          chezmoi verify --destination "$dest" --exclude scripts,encrypted
+          chezmoi managed --destination "$dest" --exclude scripts,encrypted,dirs
 
-          src = open("manifest.jsonc").read()
-          out, i, in_str, esc = [], 0, False, False
-          while i < len(src):
-              c = src[i]
-              if in_str:
-                  out.append(c)
-                  if esc: esc = False
-                  elif c == "\\": esc = True
-                  elif c == '"': in_str = False
-                  i += 1; continue
-              if c == '"':
-                  in_str = True; out.append(c); i += 1; continue
-              if src.startswith("//", i):
-                  while i < len(src) and src[i] != "\n": i += 1
-                  continue
-              out.append(c); i += 1
+          # modify_dot_claude.json must have merged every server in mcp.yaml.
+          python3 -c "import json,sys; d=json.load(open(sys.argv[1])); assert 'dbhub' in d['mcpServers'], d" "$dest/.claude.json"
 
-          data = json.loads(re.sub(r",(\s*[}\]])", r"\1", "".join(out)))
-          required = ["app", "version", "stow_packages", "tools"]
-          missing = [k for k in required if k not in data]
-          if missing:
-              sys.exit(f"manifest.jsonc is missing {missing}")
-          print(f"{data['app']} {data['version']}: "
-                f"{len(data['stow_packages'])} stow packages, "
-                f"{len(data['tools'])} tools, "
-                f"{len(data.get('secrets', []))} secrets")
+          # Every script must render to valid bash on this OS (or to nothing).
+          for f in home/.chezmoiscripts/*.sh.tmpl; do
+            out=$(chezmoi execute-template < "$f")
+            [ -z "${out//[[:space:]]/}" ] && continue
+            printf '%s\n' "$out" | bash -n || { echo "::error file=$f::renders to invalid bash"; exit 1; }
+          done
 
-          # Hand the comment-free JSON to the schema step, so the scanner above
-          # stays the only copy of the JWCC stripping in this file.
-          json.dump(data, open(os.environ["RUNNER_TEMP"] + "/manifest.json", "w"))
-          PY
-
-      # AGENTS.md says of manifest.schema.json: "It is the editor's
-      # autocomplete and CI validates against it." This is that half. Without
-      # it the schema drifts silently and the only symptom is autocomplete
-      # that lies - `additionalProperties: false` everywhere means a field the
-      # schema has not been told about is a hard error, which is exactly the
-      # signal we want on the PR that adds one.
-      #
-      # A venv because the runner's system Python is PEP 668 externally
-      # managed, and jsonschema because the schema is draft 2020-12.
-      - name: Validate against manifest.schema.json
+      - name: Apply into a scratch home (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
         run: |
-          python3 -m venv "$RUNNER_TEMP/venv"
-          "$RUNNER_TEMP/venv/bin/pip" install --quiet jsonschema
-          "$RUNNER_TEMP/venv/bin/python" - <<'PY'
-          import json, os, sys
-          from jsonschema import Draft202012Validator
+          iex "&{$(irm 'https://get.chezmoi.io/ps1')} -b '$HOME\bin'"
+          $env:PATH = "$HOME\bin;$env:PATH"
+          $dest = Join-Path $env:RUNNER_TEMP 'home'
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          chezmoi init --source $env:GITHUB_WORKSPACE --no-tty
+          chezmoi apply --destination $dest --exclude scripts,encrypted --no-tty
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          chezmoi verify --destination $dest --exclude scripts,encrypted
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          chezmoi managed --destination $dest --exclude scripts,encrypted,dirs
 
-          schema = json.load(open("manifest.schema.json"))
-          # A malformed schema would otherwise "validate" anything at all.
-          Draft202012Validator.check_schema(schema)
-          data = json.load(open(os.environ["RUNNER_TEMP"] + "/manifest.json"))
+          # Every script must render to valid PowerShell on Windows (or to nothing).
+          foreach ($f in Get-ChildItem home/.chezmoiscripts/*.ps1.tmpl) {
+            $out = Get-Content -Raw $f | chezmoi execute-template
+            if (-not ($out -join '').Trim()) { continue }
+            $errs = $null
+            [System.Management.Automation.Language.Parser]::ParseInput(($out -join "`n"), [ref]$null, [ref]$errs) | Out-Null
+            if ($errs) { Write-Output "::error file=$f::$($errs[0].Message)"; exit 1 }
+          }
 
-          errors = sorted(Draft202012Validator(schema).iter_errors(data),
-                          key=lambda e: list(e.absolute_path))
-          for e in errors:
-              where = "/".join(str(p) for p in e.absolute_path) or "(root)"
-              print(f"{where}: {e.message}", file=sys.stderr)
-          if errors:
-              sys.exit(f"manifest.jsonc does not match manifest.schema.json "
-                       f"({len(errors)} error(s))")
-          print(f"manifest.jsonc matches manifest.schema.json "
-                f"({len(data['tools'])} tools, {len(data['stow_packages'])} stow packages checked)")
-          PY
-
-      - name: CLAUDE.md and AGENTS.md must stay identical
-        run: diff CLAUDE.md AGENTS.md
+  agents:
+    name: CLAUDE.md is AGENTS.md
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: diff CLAUDE.md AGENTS.md

@@ -1,0 +1,32 @@
+{{- if ne .chezmoi.os "windows" -}}
+#!/bin/bash
+# Installs everything in .chezmoidata/packages.yaml. chezmoi re-runs this
+# whenever the rendered script changes - that is, whenever the list does.
+set -euo pipefail
+
+if ! command -v brew >/dev/null 2>&1; then
+  echo "==> Installing Homebrew"
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+for b in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+  [ -x "$b" ] && eval "$("$b" shellenv)" && break
+done
+
+echo "==> brew bundle"
+brew bundle --no-upgrade --file=- <<'BREWFILE'
+{{ range .packages.brew.formulae -}}
+brew {{ . | quote }}
+{{ end -}}
+{{ if eq .chezmoi.os "darwin" -}}
+{{ range .packages.brew.casks -}}
+cask {{ . | quote }}
+{{ end -}}
+{{ end -}}
+BREWFILE
+{{ if eq .chezmoi.os "linux" }}
+# Claude Code has no Linux package; the native installer self-updates.
+command -v claude >/dev/null 2>&1 || curl -fsSL https://claude.ai/install.sh | bash
+{{ end }}
+echo "==> npm install -g"
+npm install -g{{ range .packages.npm }} {{ . | quote }}{{ end }}
+{{ end -}}

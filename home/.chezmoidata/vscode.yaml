@@ -1,0 +1,68 @@
+# VS Code profiles. The folder names under User/profiles/ are VS Code's own
+# ids, kept fixed so every machine uses the same ones; the source folders
+# under Library/.../profiles/ and AppData/.../profiles/ must match them.
+# Refresh the extension lists with: node scripts/vscode-save-extensions.mjs
+vscode:
+  extensions:        # the default profile
+    - pierrecomputer.pierre-theme
+  profiles:
+    - name: Home
+      location: "-45339981"
+      icon: home
+      extensions:
+        - aaron-bond.better-comments
+        - anthropic.claude-code
+        - astro-build.astro-vscode
+        - biomejs.biome
+        - ecmel.vscode-html-css
+        - formulahendry.auto-close-tag
+        - formulahendry.auto-rename-tag
+        - github.vscode-github-actions
+        - golang.go
+        - janisdd.vscode-edit-csv
+        - mathematic.vscode-latex
+        - mk12.better-git-line-blame
+        - ms-vscode-remote.remote-ssh
+        - ms-vscode-remote.remote-ssh-edit
+        - ms-vscode.remote-explorer
+        - ms-vscode.remote-repositories
+        - oderwat.indent-rainbow
+        - pierrecomputer.pierre-theme
+        - pkief.material-icon-theme
+        - ritwickdey.liveserver
+        - sapegin.reveal-in-ghostty
+        - selemondev.vscode-shadcn-svelte
+        - svelte.svelte-vscode
+        - thimo.integrated-browser-mcp
+        - tomoki1207.pdf
+        - usernamehw.errorlens
+    - name: Work
+      location: "-1f17a7bd"
+      icon: briefcase
+      useDefaultFlags: {}
+      extensions:
+        - aaron-bond.better-comments
+        - angular.ng-template
+        - anthropic.claude-code
+        - clemenspeters.format-json
+        - dbcode.dbcode
+        - ecmel.vscode-html-css
+        - esbenp.prettier-vscode
+        - formulahendry.auto-close-tag
+        - formulahendry.auto-rename-tag
+        - inferrinizzard.prettier-sql-vscode
+        - ms-mssql.data-workspace-vscode
+        - ms-mssql.mssql
+        - ms-mssql.sql-bindings-vscode
+        - ms-mssql.sql-database-projects-vscode
+        - ms-vscode.live-server
+        - oderwat.indent-rainbow
+        - pierrecomputer.pierre-theme
+        - pkief.material-icon-theme
+        - postman.postman-for-vscode
+        - repreng.csv
+        - ritwickdey.liveserver
+        - shd101wyy.markdown-preview-enhanced
+        - thimo.integrated-browser-mcp
+        - usernamehw.errorlens
+        - webnative.webnative

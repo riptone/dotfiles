@@ -1,0 +1,5 @@
+{{- if ne .chezmoi.os "windows" -}}
+#!/bin/sh
+# Turn on the tracked hooks (.githooks/pre-commit: gitleaks) for this checkout.
+git -C {{ .chezmoi.workingTree | quote }} config core.hooksPath .githooks
+{{ end -}}

@@ -1,0 +1,28 @@
+{{- if ne .chezmoi.os "windows" -}}
+#!/bin/sh
+# Puts the age key in place, once per machine, before chezmoi decrypts the
+# encrypted_ files. The key is key.txt.age in a secret gist on your account,
+# itself encrypted with a passphrase. The gist is found through your `gh`
+# login, so its URL is never written anywhere public - reading the secrets
+# takes both that login and the passphrase.
+set -eu
+key={{ .chezmoi.config.age.identity | quote }}
+[ -f "$key" ] && exit 0
+
+gh auth status >/dev/null 2>&1 || gh auth login
+id=$(gh api gists --paginate --jq '.[] | select(.files | has("key.txt.age")) | .id' | head -n 1)
+if [ -z "$id" ]; then
+  echo "No gist with key.txt.age on this gh account - see docs/secrets.md" >&2
+  exit 1
+fi
+tmp=$(mktemp)
+trap 'rm -f "$tmp"' EXIT
+# $(...) drops jq's trailing newline; printf puts back exactly one.
+printf '%s\n' "$(gh api "gists/$id" --jq '.files["key.txt.age"].content')" >"$tmp"
+
+mkdir -p "$(dirname "$key")"
+umask 077
+echo "==> Decrypting the age key (your passphrase)"
+{{ .chezmoi.executable | quote }} age decrypt --passphrase --output "$key" "$tmp"
+chmod 600 "$key"
+{{ end -}}

@@ -1,0 +1,23 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+# Installs the extensions listed in .chezmoidata/vscode.yaml into each
+# profile. Re-runs whenever that list changes; `--install-extension` skips
+# ones already there. Runs after the profile files are linked, so VS Code
+# finds each profile under its fixed id instead of creating a new one.
+set -uo pipefail
+code=code
+command -v code >/dev/null 2>&1 || code="/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code"
+[ -x "$(command -v "$code")" ] || { echo "VS Code not installed yet - skipping extensions"; exit 0; }
+
+echo "==> VS Code extensions (default profile)"
+{{ range .vscode.extensions -}}
+"$code" --install-extension {{ . | quote }} >/dev/null || echo "  failed: {{ . }}"
+{{ end -}}
+{{ range .vscode.profiles -}}
+{{ $profile := .name -}}
+echo "==> VS Code extensions ({{ $profile }})"
+{{ range .extensions -}}
+"$code" --install-extension {{ . | quote }} --profile {{ $profile | quote }} >/dev/null || echo "  failed: {{ . }}"
+{{ end -}}
+{{ end -}}
+{{ end -}}
