@@ -20,12 +20,25 @@ $env:FZF_ALT_C_OPTS = '--preview "Get-ChildItem {}"'
 # The non-interactive vars for agents (GIT_EDITOR=true, PAGER=cat, ...) live
 # in claude/.claude/settings.json "env", not in this shell.
 
-# --- Dotfiles (chezmoi), same as aliases.zsh ---
-function dot  { Set-Location (Split-Path (chezmoi source-path)) }
-function dotu { chezmoi update @args }
-function dotd { chezmoi diff @args }
-function dots { chezmoi status; chezmoi git -- status --short }
-function up   { topgrade @args }
+# --- Dotfiles, same as aliases.zsh ---
+# Two directions: `up` brings everything in, `save` sends this machine's
+# changes out. Anything else is `cz <command>` (cz status, cz diff, cz edit).
+Set-Alias cz chezmoi
+function up { topgrade @args }
+function save {
+    param([string]$Message = "save from $env:COMPUTERNAME")
+    $repo = Split-Path (chezmoi source-path)
+    if (Get-Command code -ErrorAction SilentlyContinue) {
+        node (Join-Path $repo 'scripts/vscode-save-extensions.mjs') | Out-Null
+    }
+    chezmoi re-add
+    git -C $repo add -A
+    git -C $repo diff --cached --quiet
+    if ($LASTEXITCODE -eq 0) { Write-Host 'nothing to save'; return }
+    git -C $repo status --short
+    git -C $repo commit -q -m $Message
+    if ($LASTEXITCODE -eq 0) { git -C $repo push -q; if ($LASTEXITCODE -eq 0) { Write-Host 'saved and pushed' } }
+}
 if (Get-Command chezmoi -ErrorAction SilentlyContinue) {
     chezmoi completion powershell | Out-String | Invoke-Expression
 }

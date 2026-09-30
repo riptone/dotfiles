@@ -29,13 +29,9 @@ folders.
 
 **Extensions** are listed per profile in `.chezmoidata/vscode.yaml` and
 installed by `.chezmoiscripts/run_onchange_after_40-vscode-extensions.*`
-whenever that list changes. After installing or removing one, run:
-
-```bash
-node scripts/vscode-save-extensions.mjs   # rewrites the lists from what's installed
-```
-
-then commit.
+whenever that list changes. After installing or removing one, run `save`:
+it rewrites the lists from what's installed
+(`scripts/vscode-save-extensions.mjs`), then commits and pushes.
 
 ## Why Work is encrypted
 
@@ -46,13 +42,8 @@ encrypted like the other secrets, and lands as a real file at
 `~/.config/vscode/profiles/Work/settings.json` (0600).
 
 It's a real file rather than a link, so a change made in VS Code stays local
-until you save it back:
-
-```bash
-chezmoi re-add ~/.config/vscode/profiles/Work/settings.json   # re-encrypts it into the repo
-```
-
-`chezmoi status` shows `MM` on it when there's something to save. Home and
+until you run `save`, which re-encrypts it into the repo (`chezmoi re-add`)
+and pushes. `cz status` shows `MM` on it when there's something to save. Home and
 default settings are plain links: changes land in the repo straight away.
 
 ## Caveats

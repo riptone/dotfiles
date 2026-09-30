@@ -35,22 +35,27 @@ your passphrase, once. On Windows, symlinks need **Developer Mode**
 
 ## Everyday
 
+Two commands, one per direction:
+
+| | Command | Does |
+|---|---|---|
+| **In** | `up` | Updates everything: brew / winget, npm, VS Code extensions, skills, then pulls this repo and applies it |
+| **Out** | `save [message]` | Saves this machine's changes: refreshes the VS Code extension lists, re-encrypts changed secrets, commits and pushes |
+
+Everything else is `cz <command>` (`cz` = `chezmoi`):
+
 | Do this | Command |
 |---|---|
-| **Update everything** (packages, extensions, this repo) | `topgrade` (alias `up`) |
-| Pull the repo and apply it | `chezmoi update` (alias `dotu`) |
-| Preview what would change | `chezmoi diff` (alias `dotd`) |
-| Apply local edits | `chezmoi apply` |
-| What's changed and not saved | `dots` (`chezmoi status` + `git status`) |
-| Open a shell in the repo | `chezmoi cd` (alias `dot`) |
-| Start managing a file | `chezmoi add ~/.config/foo` |
-| Add or edit a secret | `chezmoi add --encrypt FILE` / `chezmoi edit FILE` |
-| Something's off | `chezmoi doctor` |
+| What's changed | `cz status` |
+| Preview what `apply` would change | `cz diff` |
+| Edit a secret (opens VS Code, re-encrypts on close) | `cz edit ~/.doti/dbhub.toml` |
+| Start managing a file / a secret | `cz add FILE` / `cz add --encrypt FILE` |
+| Open a shell in the repo | `cz cd` |
+| Something's off | `cz doctor` |
 
 Configs are **symlinks** into this repo, so editing `~/.zshrc` edits the
-tracked file, and so does an app changing its own settings. Commit what you
-want to keep. `chezmoi add`, `re-add` and `edit` commit and push by
-themselves.
+tracked file, and so does an app changing its own settings. `save` commits
+whatever changed.
 
 ## Layout
 

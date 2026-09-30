@@ -42,15 +42,13 @@ historical name; the insales project reads from it.) Claude is denied
 ## Daily use
 
 ```bash
-chezmoi edit ~/.doti/dbhub.toml       # decrypts to a temp file, re-encrypts on save
-chezmoi apply                          # write the change to ~/.doti
-git commit -am "dbhub: add source" && git push
+cz edit ~/.doti/dbhub.toml   # opens the decrypted file in VS Code; re-encrypts when you close the tab
+save "dbhub: add source"     # commit and push
 ```
 
-On your other machines, `chezmoi update` picks it up.
+On your other machines, `up` (or `cz update`) picks it up.
 
-To add a new secret: `chezmoi add --encrypt ~/.doti/new-thing.json`, then
-commit the new `encrypted_*.age` file.
+To add a new secret: `cz add --encrypt ~/.doti/new-thing.json`, then `save`.
 
 ## A new machine
 

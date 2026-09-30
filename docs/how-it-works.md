@@ -93,13 +93,12 @@ caches, `node_modules`) never comes near this repo.
 
 | To... | Do |
 |---|---|
-| Change a config | Edit it, then commit |
-| Add a tool | Add a line to `packages.yaml`, then `chezmoi apply` |
-| Change a secret | `chezmoi edit ~/.doti/dbhub.toml`, then commit |
+| Change a config | Edit it, then `save` |
+| Add a tool | Add a line to `packages.yaml`, then `cz apply` and `save` |
+| Change a secret | `cz edit ~/.doti/dbhub.toml` (opens VS Code), then `save` |
 | Update everything | `up` (topgrade: brew, winget, npm, VS Code extensions, skills, then `chezmoi update`) |
-| Sync another machine | `chezmoi update` |
-| See what's unsaved | `dots` |
-| Save a changed encrypted file | `chezmoi re-add <file>`: commits and pushes by itself |
+| See what's unsaved | `cz status` |
+| Send this machine's changes out | `save [message]`: extension lists, re-encrypted secrets, commit, push |
 | Check for drift | `chezmoi status` (lists) / `chezmoi verify` (exit code) |
 
 ## Secrets

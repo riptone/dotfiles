@@ -107,3 +107,6 @@ commit, a doc, or a comment. See `docs/secrets.md`.
   would change.
 - **Confirm before any destructive operation against `$HOME`.**
 - **Read-only checks:** `chezmoi status` and `chezmoi verify`.
+- **`save` (in `aliases.zsh` / `profile.ps1`) commits and pushes.** It's the
+  user's command; an agent doesn't run it, or `git push`, unless asked.
+  chezmoi's own auto-commit is off, so `chezmoi re-add` / `edit` never push.

@@ -12,13 +12,24 @@ alias ...='cd ../..'
 alias ~='cd ~'
 alias -- -='cd -'
 
-# --- Dotfiles (chezmoi) ---
-alias dot='chezmoi cd'          # a shell in the repo; exit to come back
-alias dotu='chezmoi update'     # git pull, then apply
-alias dotd='chezmoi diff'       # what apply would change
-# What's changed and not saved yet: in $HOME vs the repo, then in the repo vs git.
-alias dots='chezmoi status; chezmoi git -- status --short'
-alias up='topgrade'             # update everything (brew, winget, npm, VS Code, chezmoi)
+# --- Dotfiles ---
+# Two directions: `up` brings everything in, `save` sends this machine's
+# changes out. Anything else is `cz <command>` (cz status, cz diff, cz edit).
+alias cz='chezmoi'
+alias up='topgrade'   # brew, winget, npm, VS Code extensions, skills, then chezmoi update
+
+# save [message]: refresh the VS Code extension lists, re-add changed
+# encrypted files (Work settings), then commit and push whatever changed.
+# The pre-commit hook scans the commit for secrets first.
+save() {
+  local repo; repo="$(chezmoi source-path)/.." || return
+  command -v code >/dev/null && node "$repo/scripts/vscode-save-extensions.mjs" >/dev/null
+  chezmoi re-add
+  git -C "$repo" add -A
+  if git -C "$repo" diff --cached --quiet; then echo "nothing to save"; return 0; fi
+  git -C "$repo" status --short
+  git -C "$repo" commit -q -m "${1:-save from $(hostname -s)}" && git -C "$repo" push -q && echo "saved and pushed"
+}
 
 # --- OpenCode ---
 alias oc='opencode'

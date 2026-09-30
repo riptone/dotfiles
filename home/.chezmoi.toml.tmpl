@@ -23,10 +23,8 @@ encryption = "age"
 [diff]
   exclude = ["scripts"]
 
-# `chezmoi add`, `re-add` and `edit` commit and push by themselves, so
-# saving the encrypted Work settings is one command. (Plain edits through a
-# symlink don't go through chezmoi: commit those as usual.) The pre-commit
-# gitleaks hook still runs on these commits.
-[git]
-  autoCommit = true
-  autoPush = true
+# `chezmoi edit` (for the encrypted files) opens VS Code and waits for the
+# tab to close. Committing is left to `save` (aliases.zsh / profile.ps1).
+[edit]
+  command = "code"
+  args = ["--wait"]
