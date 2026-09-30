@@ -55,6 +55,7 @@ home/
   .chezmoidata/packages.yaml THE package list; edit it to add or remove a tool
   .chezmoidata/mcp.yaml      Claude's MCP servers (today: dbhub)
   .chezmoidata/vscode.yaml   VS Code profiles and their extensions
+  .chezmoidata/skills.yaml   agent skills to install (a script runs npx skills add)
   modify_dot_claude.json     puts those servers into ~/.claude.json (step 4)
   .chezmoiscripts/           the scripts from steps 1, 2 and 6 (a bash and a PowerShell twin each)
   dot_zshrc, dot_zprofile, dot_zsh/                                 zsh
@@ -98,7 +99,7 @@ caches, `node_modules`) never comes near this repo.
 | Change a secret | `cz edit ~/.doti/dbhub.toml` (opens VS Code), then `save` |
 | Update everything | `up` (topgrade: brew, winget, npm, VS Code extensions, skills, then `chezmoi update`) |
 | See what's unsaved | `cz status` |
-| Send this machine's changes out | `save [message]`: extension lists, re-encrypted secrets, commit, push |
+| Send this machine's changes out | `save [message]`: extension and skill lists, re-encrypted secrets, commit, push |
 | Check for drift | `chezmoi status` (lists) / `chezmoi verify` (exit code) |
 
 ## Secrets

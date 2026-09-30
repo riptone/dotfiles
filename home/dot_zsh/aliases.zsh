@@ -18,12 +18,13 @@ alias -- -='cd -'
 alias cz='chezmoi'
 alias up='topgrade'   # brew, winget, npm, VS Code extensions, skills, then chezmoi update
 
-# save [message]: refresh the VS Code extension lists, re-add changed
+# save [message]: refresh the VS Code extension and skill lists, re-add changed
 # encrypted files (Work settings), then commit and push whatever changed.
 # The pre-commit hook scans the commit for secrets first.
 save() {
   local repo; repo="$(chezmoi source-path)/.." || return
   command -v code >/dev/null && node "$repo/scripts/vscode-save-extensions.mjs" >/dev/null
+  node "$repo/scripts/skills-save.mjs" >/dev/null
   chezmoi re-add
   git -C "$repo" add -A
   if git -C "$repo" diff --cached --quiet; then echo "nothing to save"; return 0; fi

@@ -14,6 +14,7 @@ home/                         what lands in $HOME (chezmoi source state)
   .chezmoidata/packages.yaml  every package, per OS
   .chezmoidata/mcp.yaml       Claude's MCP servers
   .chezmoidata/vscode.yaml    VS Code profiles and their extensions
+  .chezmoidata/skills.yaml    agent skills (repo: [names]), installed by a script
   modify_dot_claude.json      merges those into ~/.claude.json, nothing else
   .chezmoiscripts/            install packages, fetch the age key, git hooks
   .chezmoiignore              per-OS exclusions (a template)
@@ -59,6 +60,9 @@ docs/                         the longer explanations
   The Work profile's settings are encrypted (they hold client DB hosts).
   Profiles and extensions are in `.chezmoidata/vscode.yaml`. See
   `docs/vscode.md`.
+- **Skills are a list, not files.** Third-party skills go in
+  `.chezmoidata/skills.yaml`; never commit their folders. `save` rewrites
+  the list from `~/.agents/.skill-lock.json`. See `docs/claude-code.md`.
 - **Line endings:** `.gitattributes` forces LF on shell files and CRLF on
   PowerShell. `*.age` is binary to git.
 

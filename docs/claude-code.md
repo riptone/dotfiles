@@ -24,8 +24,9 @@ directory full of Claude's own state (sessions, projects, plugin caches,
 auto-memory), and none of that comes near this repo.
 
 Other user-authored config can be added the same way, with
-`chezmoi add ~/.claude/CLAUDE.md` (or `agents/`, `skills/`,
-`output-styles/`). Never add `~/.claude.json`: it's app state, holding
+`chezmoi add ~/.claude/CLAUDE.md` (or `agents/`, `output-styles/`).
+Skills you write yourself could go there too; third-party ones are
+installed from a list (below). Never add `~/.claude.json`: it's app state, holding
 OAuth, trust decisions and per-project data.
 
 **`settings.json` is a symlink, so Claude's writes land here.** Changing
@@ -83,3 +84,21 @@ byte for byte.
 To add another MCP server, add it to `mcp.yaml` and its npm package to
 `packages.yaml` under `npm`. If opencode should have it too, add it to
 `opencode.jsonc`'s `"mcp"` as well.
+
+## Skills
+
+Third-party skills are tracked as a **list**, not as files:
+`home/.chezmoidata/skills.yaml` maps each GitHub repo to the skills taken
+from it. `run_onchange_after_50-skills.*` installs them with
+`npx skills add <repo> -g -a claude-code opencode -s <names>` whenever the
+list changes, into `~/.agents/skills` with links from `~/.claude/skills`.
+
+| To... | Do |
+|---|---|
+| Add a skill | `npx skills add <repo> -g -s <name>`, then `save` (it rewrites the list from `~/.agents/.skill-lock.json`) |
+| Remove one | `npx skills remove -g <name>`, then `save`; other machines keep it until removed there too |
+| Update all | `up` (topgrade's `skills` step) |
+
+The caveman skills come from its Claude plugin (`enabledPlugins` in
+`settings.json`), so they're not in the list. A skill that some other tool
+drops into `~/.agents/skills` without the lock file isn't tracked.

@@ -31,6 +31,7 @@ function save {
     if (Get-Command code -ErrorAction SilentlyContinue) {
         node (Join-Path $repo 'scripts/vscode-save-extensions.mjs') | Out-Null
     }
+    node (Join-Path $repo 'scripts/skills-save.mjs') | Out-Null
     chezmoi re-add
     git -C $repo add -A
     git -C $repo diff --cached --quiet

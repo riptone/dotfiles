@@ -1,0 +1,14 @@
+{{- if ne .chezmoi.os "windows" -}}
+#!/bin/bash
+# Installs the agent skills listed in .chezmoidata/skills.yaml, globally, for
+# Claude Code and opencode. Re-runs whenever that list changes; `skills add`
+# overwrites ones already there. It never removes a skill: do that with
+# `npx skills remove -g <name>`, then `save`.
+set -uo pipefail
+command -v npx >/dev/null 2>&1 || { echo "npx not found - skipping skills"; exit 0; }
+cd "$HOME"
+echo "==> agent skills"
+{{ range $source, $names := .skills -}}
+npx -y skills add {{ $source | quote }} -g -y -a claude-code opencode -s{{ range $names }} {{ . | quote }}{{ end }} >/dev/null 2>&1 || echo "  failed: {{ $source }}"
+{{ end -}}
+{{ end -}}

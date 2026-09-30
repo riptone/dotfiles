@@ -1,0 +1,22 @@
+# Agent skills, installed globally for Claude Code and opencode by
+# .chezmoiscripts/run_onchange_after_50-skills.* whenever this list changes.
+# Keys are GitHub repos, values the skill names to take from each.
+# `save` rewrites this from ~/.agents/.skill-lock.json; `up` updates them.
+# The caveman skills come from its Claude plugin, not from here.
+skills:
+  anthropics/skills:
+    - frontend-design
+  cloudflare/skills:
+    - cloudflare
+    - workers-best-practices
+    - wrangler
+  mattpocock/skills:
+    - grill-me
+    - improve-codebase-architecture
+  sveltejs/ai-tools:
+    - svelte-code-writer
+    - svelte-core-bestpractices
+  vercel-labs/agent-browser:
+    - agent-browser
+  vercel-labs/skills:
+    - find-skills

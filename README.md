@@ -40,7 +40,7 @@ Two commands, one per direction:
 | | Command | Does |
 |---|---|---|
 | **In** | `up` | Updates everything: brew / winget, npm, VS Code extensions, skills, then pulls this repo and applies it |
-| **Out** | `save [message]` | Saves this machine's changes: refreshes the VS Code extension lists, re-encrypts changed secrets, commits and pushes |
+| **Out** | `save [message]` | Saves this machine's changes: refreshes the VS Code extension and skill lists, re-encrypts changed secrets, commits and pushes |
 
 Everything else is `cz <command>` (`cz` = `chezmoi`):
 
