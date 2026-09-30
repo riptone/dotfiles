@@ -1,10 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "model": "opus[1m]",
-  "effortLevel": "high",
-  "outputStyle": "Concise",
-  "autoUpdatesChannel": "latest",
-  "switchModelsOnFlag": false,
   "env": {
     "BASH_MAX_OUTPUT_LENGTH": "20000",
     "MAX_MCP_OUTPUT_TOKENS": "15000",
@@ -61,17 +56,7 @@
       "Edit(~/.config/chezmoi/key.txt)"
     ]
   },
-  "enabledPlugins": {
-    "caveman@caveman": true
-  },
-  "extraKnownMarketplaces": {
-    "caveman": {
-      "source": {
-        "source": "git",
-        "url": "https://github.com/JuliusBrussee/caveman.git"
-      }
-    }
-  },
+  "model": "opus[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -84,5 +69,22 @@
         ]
       }
     ]
-  }
+  },
+  "enabledPlugins": {
+    "caveman@caveman": true
+  },
+  "extraKnownMarketplaces": {
+    "caveman": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/JuliusBrussee/caveman.git"
+      }
+    }
+  },
+  "outputStyle": "Concise",
+  "effortLevel": "high",
+  "autoUpdatesChannel": "latest",
+  "theme": "dark",
+  "switchModelsOnFlag": false,
+  "defaultMode": "auto"
 }

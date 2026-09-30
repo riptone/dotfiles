@@ -27,7 +27,6 @@ packages:
       - brave-browser
       - font-jetbrains-mono-nerd-font
       - hiddenbar
-      - claude-code@latest   # the rolling channel, like autoUpdatesChannel
   # Windows, via winget.
   winget:
     - Git.Git
@@ -42,7 +41,6 @@ packages:
     - Starship.Starship
     - rtk-ai.rtk
     - topgrade-rs.topgrade
-    - Anthropic.ClaudeCode
     - Microsoft.PowerShell
     - Microsoft.WindowsTerminal
     - Microsoft.VisualStudioCode

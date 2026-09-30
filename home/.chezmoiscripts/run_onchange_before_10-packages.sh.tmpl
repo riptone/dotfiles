@@ -23,10 +23,6 @@ cask {{ . | quote }}
 {{ end -}}
 {{ end -}}
 BREWFILE
-{{ if eq .chezmoi.os "linux" }}
-# Claude Code has no Linux package; the native installer self-updates.
-command -v claude >/dev/null 2>&1 || curl -fsSL https://claude.ai/install.sh | bash
-{{ end }}
 echo "==> npm install -g"
 npm install -g{{ range .packages.npm }} {{ . | quote }}{{ end }}
 {{ end -}}
