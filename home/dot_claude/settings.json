@@ -12,6 +12,7 @@
     "PIP_NO_INPUT": "1"
   },
   "permissions": {
+    "defaultMode": "auto",
     "allow": [
       "Bash(git status*)",
       "Bash(git log *)",
@@ -85,6 +86,5 @@
   "effortLevel": "high",
   "autoUpdatesChannel": "latest",
   "theme": "dark",
-  "switchModelsOnFlag": false,
-  "defaultMode": "auto"
+  "switchModelsOnFlag": false
 }
