@@ -5,13 +5,13 @@ Claude Code is the primary agent. opencode stays installed as a second one
 
 ## Install
 
-| OS | How | Updates |
-|---|---|---|
-| macOS | cask `claude-code@latest` (the rolling channel) | `brew upgrade --cask`: casks don't self-update |
-| Windows | winget `Anthropic.ClaudeCode` | `winget upgrade` |
-| Linux | The native installer, run by the packages script | Self-updates |
+Nothing to install: Claude runs from the VS Code extension
+(`anthropic.claude-code`, in `.chezmoidata/vscode.yaml`), which bundles its
+own copy and updates with the extension. It reads the same
+`~/.claude/settings.json` and `~/.claude.json` a CLI would.
 
-All three come from `home/.chezmoidata/packages.yaml`.
+Want `claude` in a terminal too? Add `claude-code@latest` to the brew casks
+(or `Anthropic.ClaudeCode` to winget) in `packages.yaml`.
 
 ## What's managed
 

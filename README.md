@@ -84,7 +84,7 @@ Edit **`home/.chezmoidata/packages.yaml`**; the next `chezmoi apply`
 installs what's new.
 
 - **CLI:** git, curl, node, bun, gh, gitleaks, fd, fzf, zoxide, starship,
-  rtk, topgrade, **claude**, opencode
+  rtk, topgrade, opencode (Claude comes with its VS Code extension)
 - **MCP servers:** `@bytebase/dbhub`
 - **zsh:** zsh-autosuggestions, zsh-fast-syntax-highlighting (PSReadLine on Windows)
 - **GUI:** VS Code, Brave, Ghostty (macOS) or Windows Terminal, hiddenbar (macOS)
