@@ -51,6 +51,17 @@
 [rerere]
   enabled = true         # remember how you resolved a conflict, reuse it
 
+# GitHub (and gists) authenticate through the `gh` login, the same on every
+# machine: no separate token in the OS keychain, so no "allow access" prompts
+# after git upgrades. The empty helper first clears the per-OS default
+# (osxkeychain / manager) for these hosts only; every other host keeps it.
+[credential "https://github.com"]
+  helper =
+  helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+  helper =
+  helper = !gh auth git-credential
+
 [include]
   path = ~/.gitconfig.local
 
