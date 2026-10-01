@@ -12,7 +12,6 @@
     "PIP_NO_INPUT": "1"
   },
   "permissions": {
-    "defaultMode": "auto",
     "allow": [
       "Bash(git status*)",
       "Bash(git log *)",
@@ -55,7 +54,8 @@
       "Edit(~/.doti/**)",
       "Read(~/.config/chezmoi/key.txt)",
       "Edit(~/.config/chezmoi/key.txt)"
-    ]
+    ],
+    "defaultMode": "auto"
   },
   "model": "opus[1m]",
   "hooks": {
