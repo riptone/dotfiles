@@ -1,0 +1,20 @@
+{{- $cloudflared := "cloudflared" -}}
+{{- if eq .chezmoi.os "darwin" -}}
+{{- $cloudflared = "/opt/homebrew/bin/cloudflared" -}}
+# Added by OrbStack: 'orb' SSH host for Linux machines
+# This only works if it's at the top of ssh_config (before any Host blocks).
+Include ~/.orbstack/ssh/config
+
+{{ end -}}
+# A VM da Oracle (rittea), pelo túnel do Cloudflare. Sem chaves SSH: o cloudflared pede ao
+# Access um certificado de poucos minutos depois do login com o GitHub. Só precisa do
+# cloudflared instalado (brew install cloudflared).
+Host oracle
+  HostName ssh.tone.rip
+  User ubuntu
+
+Match host ssh.tone.rip exec "{{ $cloudflared }} access ssh-gen --hostname %h"
+  ProxyCommand {{ $cloudflared }} access ssh --hostname %h
+  IdentityFile ~/.cloudflared/%h-cf_key
+  CertificateFile ~/.cloudflared/%h-cf_key-cert.pub
+  IdentitiesOnly yes

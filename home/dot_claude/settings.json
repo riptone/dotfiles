@@ -86,5 +86,10 @@
   "effortLevel": "high",
   "autoUpdatesChannel": "latest",
   "theme": "dark",
-  "switchModelsOnFlag": false
+  "switchModelsOnFlag": false,
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "high"
+    }
+  }
 }

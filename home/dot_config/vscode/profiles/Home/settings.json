@@ -121,4 +121,18 @@
   "browserBridge.autoStart": false,
   "claudeCode.hideOnboarding": true,
   "diffEditor.hideUnchangedRegions.enabled": true,
+  "pgsql.serverGroups": [
+    {
+      "name": "Servers",
+      "id": "EB685714-680B-48C4-9408-B02AE86A53E1",
+      "isDefault": true
+    }
+  ],
+  "biome.suggestInstallingGlobally": false,
+  "githubPullRequests.remotes": [
+    "origin",
+    "upstream",
+    "main"
+  ],
+  "window.density.layout": "compact",
 }
