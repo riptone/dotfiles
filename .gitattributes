@@ -4,14 +4,11 @@
 
 * text=auto eol=lf
 
-# Shell scripts and git hooks: always LF.
+# Shell scripts: always LF.
 *.sh      text eol=lf
-*.sh.tmpl text eol=lf
-.githooks/* text eol=lf
 
 # PowerShell / batch: CRLF is safest for native Windows tooling.
 *.ps1   text eol=crlf
-*.ps1.tmpl text eol=crlf
 *.psm1  text eol=crlf
 *.psd1  text eol=crlf
 *.cmd   text eol=crlf
@@ -24,8 +21,9 @@
 *.json  text eol=lf
 *.jsonc text eol=lf
 *.toml  text eol=lf
-dot_zshrc     text eol=lf
-dot_zprofile  text eol=lf
-dot_gitconfig text eol=lf
+home/.zshrc     text eol=lf
+home/.zprofile  text eol=lf
+home/.gitconfig text eol=lf
+*.mjs   text eol=lf
 # Encrypted secrets are ASCII-armored; never let a checkout touch them.
 *.age -text

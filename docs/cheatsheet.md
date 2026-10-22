@@ -1,9 +1,9 @@
 # Everyday cheatsheet
 
 What the more niche installed things actually do — the stuff that's easy to
-forget between uses. chezmoi itself is in the [README](../README.md#everyday).
+forget between uses. `up` / `save` are in the [README](../README.md#everyday).
 
-**Ghostty — tmux-style multiplexing** (`ghostty/.config/ghostty/config`).
+**Ghostty — tmux-style multiplexing** (`config/ghostty/config`; `config/wezterm/wezterm.lua` has the same keys).
 `ctrl+a` is the leader key, like tmux's prefix. Ghostty waits indefinitely
 after a leader, so a bare `ctrl+a` never reaches the shell — double-tap it to
 send a real `^A` (zsh's beginning-of-line, fzf's too). `window-save-state =
@@ -39,18 +39,17 @@ opens an interactive picker when more than one directory matches well.
 
 **Listing** — `ll` (long, all), `la` (all), `l1` (one per line).
 
-**starship prompt** — config lives at `~/.config/starship.toml` (this repo's
-`starship/` package). Colors match the Tokyo Night theme used everywhere else
-(ghostty, opencode TUI, Windows Terminal). Just edit the file — starship
+**starship prompt** — config lives at `~/.config/starship.toml` (`config/starship.toml`). Colors match the Tokyo Night theme used everywhere else
+(ghostty, wezterm, opencode TUI). Just edit the file — starship
 re-reads it on every prompt, no reload needed.
 
 **Windows PowerShell git-alias gotcha** — `gs` / `gd` / `ga` work, but
 `gc` / `gp` / `gl` are deliberately **not** overridden (they're core
 PowerShell aliases for `Get-Content` / `Get-ItemProperty` / `Get-Location`).
 Use git's own aliases instead — `git c`, `git p`, `git l` — which work
-identically on every platform (defined once, in `git/.gitconfig`).
+identically on every platform (defined once, in `home/.gitconfig`).
 
-**git aliases** (`git/.gitconfig`) — the non-obvious ones:
+**git aliases** (`home/.gitconfig`) — the non-obvious ones:
 
 | Alias | Does |
 |---|---|
@@ -71,6 +70,5 @@ moving the cursor.
 **Misc aliases** — `myip` (public IP via ifconfig.me), `path` (one `$PATH`
 entry per line), `reload` (`exec zsh`, reloads the shell in place).
 
-**Drift check** — `chezmoi status` lists every managed file that differs
-from the repo, and `chezmoi verify` exits non-zero if anything does, which
-is handy in a script. `chezmoi doctor` checks chezmoi's own setup.
+**Drift check** — `mise dot status` lists every managed file that differs
+from the repo, `mise dot diff` shows how.

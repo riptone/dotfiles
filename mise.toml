@@ -1,0 +1,84 @@
+# Run from inside this repo. Sources are relative to this file, so the clone
+# can live anywhere; the global config in config/mise/ is linked into
+# ~/.config/mise/, so tools stay active outside the repo.
+#
+#   mise bootstrap --dry-run     preview
+#   mise bootstrap               packages, tools, dotfiles, then the `bootstrap` task
+#
+# First run on a new machine, before ~/.config/mise exists:
+#   MISE_GLOBAL_CONFIG_FILE=$PWD/config/mise/config.toml mise bootstrap
+
+[dotfiles]
+"~/.zshrc" = "home/.zshrc"
+"~/.zprofile" = "home/.zprofile"
+"~/.zsh" = { source = "home/.zsh", mode = "symlink-each" }
+"~/.gitconfig" = "home/.gitconfig"
+"~/.ssh/config" = "home/.ssh/config"
+"~/.claude/settings.json" = "home/.claude/settings.json"
+"~/.claude/AGENTS.md" = "home/.claude/AGENTS.md"
+# One rules file for every agent: each reads its own name.
+"~/.claude/CLAUDE.md" = "home/.claude/AGENTS.md"
+"~/.codex/AGENTS.md" = "home/.claude/AGENTS.md"
+"~/.gemini/AGENTS.md" = "home/.claude/AGENTS.md"
+
+"~/.config/mise" = { source = "config/mise", mode = "symlink-each" }
+"~/.config/starship.toml" = "config/starship.toml"
+"~/.config/git" = { source = "config/git", mode = "symlink-each" }
+"~/.config/opencode" = { source = "config/opencode", mode = "symlink-each" }
+"~/.config/wezterm" = { source = "config/wezterm", mode = "symlink-each" }
+"~/.config/ghostty" = { source = "config/ghostty", mode = "symlink-each", variants = [{ os = "macos" }] }
+
+# VS Code keeps its user folder in a per-OS place; the files live in config/vscode.
+"~/Library/Application Support/Code/User/settings.json" = { source = "config/vscode/settings.json", variants = [{ os = "macos" }] }
+"~/Library/Application Support/Code/User/profiles/-45339981/settings.json" = { source = "config/vscode/profiles/Home/settings.json", variants = [{ os = "macos" }] }
+"~/Library/Application Support/Code/User/profiles/-45339981/keybindings.json" = { source = "config/vscode/profiles/Home/keybindings.json", variants = [{ os = "macos" }] }
+"~/Library/Application Support/Code/User/profiles/-1f17a7bd/settings.json" = { source = "config/vscode/profiles/Work/settings.json", variants = [{ os = "macos" }] }
+"~/Library/Application Support/Code/User/profiles/-1f17a7bd/keybindings.json" = { source = "config/vscode/profiles/Work/keybindings.json", variants = [{ os = "macos" }] }
+"~/AppData/Roaming/Code/User/settings.json" = { source = "config/vscode/settings.json", variants = [{ os = "windows" }] }
+"~/AppData/Roaming/Code/User/profiles/-45339981/settings.json" = { source = "config/vscode/profiles/Home/settings.json", variants = [{ os = "windows" }] }
+"~/AppData/Roaming/Code/User/profiles/-45339981/keybindings.json" = { source = "config/vscode/profiles/Home/keybindings.json", variants = [{ os = "windows" }] }
+"~/AppData/Roaming/Code/User/profiles/-1f17a7bd/settings.json" = { source = "config/vscode/profiles/Work/settings.json", variants = [{ os = "windows" }] }
+"~/AppData/Roaming/Code/User/profiles/-1f17a7bd/keybindings.json" = { source = "config/vscode/profiles/Work/keybindings.json", variants = [{ os = "windows" }] }
+
+# Windows only.
+"~/Documents/PowerShell/Microsoft.PowerShell_profile.ps1" = { source = "config/powershell/profile.ps1", variants = [{ os = "windows" }] }
+"~/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1" = { source = "config/powershell/profile.ps1", variants = [{ os = "windows" }] }
+
+# The Work VS Code profile is encrypted, so decrypt before dotfiles link it.
+# Asks for the key passphrase once per machine.
+[bootstrap.hooks.pre-dotfiles]
+# Runs before the [tools] step, so mise x fetches node, age and gh on a fresh machine.
+run = "mise x node age gh -- node scripts/dots.mjs secrets"
+
+# `mise bootstrap` runs this last, every time, so it must be safe to repeat.
+[tasks.bootstrap]
+description = "Claude MCP servers, VS Code profiles + extensions, agent skills."
+run = [
+  "node scripts/dots.mjs mcp",
+  "node scripts/dots.mjs vscode",
+  "node scripts/dots.mjs skills",
+]
+
+[tasks.secrets]
+description = "Decrypt every *.age (~/.doti, the Work VS Code profile)."
+run = "mise x node age gh -- node scripts/dots.mjs secrets"
+
+[tasks.up]
+description = "Pull this repo, upgrade tools, re-run bootstrap, remove VS Code extensions not in the list."
+run = [
+  "git pull --ff-only",
+  "mise upgrade",
+  "mise bootstrap --yes",
+  "node scripts/dots.mjs vscode --prune",
+]
+
+[tasks.save]
+description = "Refresh the extension/skill lists, commit and push whatever changed."
+usage = 'arg "[message]" default="save from this machine"'
+run = """
+  node scripts/dots.mjs save-lists
+  git add -A
+  if git diff --cached --quiet; then echo "nothing to save"; exit 0; fi
+  git status --short
+  git commit -q -m "${usage_message:-save}" && git push -q && echo "saved and pushed"
+"""

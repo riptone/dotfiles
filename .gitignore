@@ -1,14 +1,16 @@
 .DS_Store
 *.bak.*
 
-# Plaintext secrets. Only their encrypted_*.age form belongs in this repo
-# (home/private_dot_doti/); these lines are the backstop for the day one is
-# copied here by hand.
-.doti/
-bin/
+# Plaintext secrets. Only their *.age form belongs in this repo; these lines
+# are the backstop for the day one is copied here by hand.
+home/.doti/*
+!home/.doti/*.age
 dbhub.toml
 mssql-envs.json
 insales-accounts.json
 .gitconfig.local
 key.txt
 debug.log
+test/
+# decrypted from settings.json.age by `mise run secrets`
+config/vscode/profiles/Work/settings.json

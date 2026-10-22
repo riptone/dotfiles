@@ -1,0 +1,61 @@
+{
+  "extensions": [
+    "pierrecomputer.pierre-theme"
+  ],
+  "profiles": [
+    {
+      "name": "Home",
+      "location": "-45339981",
+      "icon": "home",
+      "extensions": [
+        "aaron-bond.better-comments",
+        "anthropic.claude-code",
+        "biomejs.biome",
+        "bruno-api-client.bruno",
+        "dbcode.dbcode",
+        "formulahendry.auto-close-tag",
+        "formulahendry.auto-rename-tag",
+        "github.vscode-github-actions",
+        "github.vscode-pull-request-github",
+        "hverlin.mise-vscode",
+        "james-yu.latex-workshop",
+        "ms-vscode-remote.remote-ssh",
+        "ms-vscode.remote-explorer",
+        "ms-vscode.remote-repositories",
+        "oderwat.indent-rainbow",
+        "pierrecomputer.pierre-theme",
+        "pkief.material-icon-theme",
+        "ritwickdey.liveserver",
+        "svelte.svelte-vscode",
+        "tamasfe.even-better-toml",
+        "tomoki1207.pdf",
+        "usernamehw.errorlens",
+        "vitest.explorer"
+      ]
+    },
+    {
+      "name": "Work",
+      "location": "-1f17a7bd",
+      "icon": "briefcase",
+      "useDefaultFlags": {},
+      "extensions": [
+        "aaron-bond.better-comments",
+        "angular.ng-template",
+        "anthropic.claude-code",
+        "biomejs.biome",
+        "bruno-api-client.bruno",
+        "dbcode.dbcode",
+        "diemasmichiels.emulate",
+        "formulahendry.auto-close-tag",
+        "formulahendry.auto-rename-tag",
+        "oderwat.indent-rainbow",
+        "pierrecomputer.pierre-theme",
+        "pkief.material-icon-theme",
+        "pranaygp.vscode-css-peek",
+        "ritwickdey.liveserver",
+        "usernamehw.errorlens",
+        "webnative.webnative"
+      ]
+    }
+  ]
+}
