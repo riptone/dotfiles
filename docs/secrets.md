@@ -24,9 +24,11 @@ keep it in a password manager or somewhere offline. If it's lost, the
 secrets have to be rebuilt from the original passwords.
 
 On each machine, the key is decrypted **once**, by
-`home/.chezmoiscripts/run_once_before_20-age-key.*`, to
-`~/.config/chezmoi/key.txt` (0600). After that, every `chezmoi apply` or
-`chezmoi update` decrypts the secrets silently.
+`home/.chezmoiscripts/run_before_20-age-key.*`, to
+`~/.config/chezmoi/key.txt` (0600). The script runs before every apply but
+exits immediately when that file is there and non-empty, so you're only asked
+for the passphrase again if the key is missing. After that, every
+`chezmoi apply` or `chezmoi update` decrypts the secrets silently.
 
 ## What's in it
 

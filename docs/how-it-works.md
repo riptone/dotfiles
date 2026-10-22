@@ -15,11 +15,12 @@
    `.chezmoiscripts/run_onchange_before_10-packages.*` if the list changed
    since last time: `brew bundle` on macOS and Linux, winget + bun on
    Windows, and `npm install -g` for the MCP servers everywhere.
-2. **The age key, first run only.** `run_once_before_20-age-key.*` downloads
-   `key.txt.age` from a secret gist on your account (found through your `gh`
-   login) and asks for your
-   passphrase to unlock it into `~/.config/chezmoi/key.txt`. It never asks
-   again on that machine.
+2. **The age key.** `run_before_20-age-key.*` exits immediately when
+   `~/.config/chezmoi/key.txt` is present and non-empty. Otherwise it
+   downloads `key.txt.age` from a secret gist on your account (found through
+   your `gh` login) and asks for your passphrase to unlock it into
+   `~/.config/chezmoi/key.txt`. Because it runs before every apply, a deleted
+   key is rebuilt on the next one instead of leaving every later apply broken.
 3. **Configs.** Every file under `home/` gets a symlink at the matching path
    in `~`. `home/dot_zshrc` becomes `~/.zshrc`, pointing back into this repo.
 4. **Claude's MCP servers.** `home/modify_dot_claude.json` adds the servers

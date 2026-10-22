@@ -5,6 +5,7 @@
 # (home/private_dot_doti/); these lines are the backstop for the day one is
 # copied here by hand.
 .doti/
+bin/
 dbhub.toml
 mssql-envs.json
 insales-accounts.json

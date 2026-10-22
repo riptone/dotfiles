@@ -26,8 +26,11 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply riptone
 ```
 
 ```powershell
-iex "&{$(irm 'https://get.chezmoi.io/ps1')} -- init --apply riptone"
+iex "&{$(irm 'https://get.chezmoi.io/ps1')} -b ~/.local/bin -- init --apply riptone"
 ```
+
+The Windows installer puts the binary in `.\bin` unless `-b` says otherwise,
+and this repo's PowerShell profile only adds `~/.local/bin` to `PATH`.
 
 On first run it asks you to log in to `gh` (if you aren't already) and for
 your passphrase, once. On Windows, symlinks need **Developer Mode**
