@@ -40,5 +40,15 @@
     "key": "f12",
     "command": "-workbench.action.browser.toggleDevTools",
     "when": "browserHasUrl && !browserHasError && activeEditor == 'workbench.editor.browser'"
+  },
+  {
+    "key": "alt+cmd+n",
+    "command": "latex-workshop.build",
+    "when": "!config.latex-workshop.bind.altKeymap.enabled && !virtualWorkspace && editorLangId =~ /^build$|^latex$|^latex-class$|^latex-package$|^context$|^latex-expl3$|^doctex$|^rsweave$|^jlweave$|^pweave$/"
+  },
+  {
+    "key": "alt+cmd+b",
+    "command": "-latex-workshop.build",
+    "when": "!config.latex-workshop.bind.altKeymap.enabled && !virtualWorkspace && editorLangId =~ /^build$|^latex$|^latex-class$|^latex-package$|^context$|^latex-expl3$|^doctex$|^rsweave$|^jlweave$|^pweave$/"
   }
 ]
