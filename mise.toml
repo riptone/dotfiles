@@ -64,11 +64,12 @@ description = "Decrypt every *.age (~/.doti, the Work VS Code profile)."
 run = "mise x node age gh -- node scripts/dots.mjs secrets"
 
 [tasks.up]
-description = "Pull this repo, upgrade tools, re-run bootstrap."
+description = "Pull this repo, upgrade tools, re-run bootstrap, remove VS Code extensions not in the list."
 run = [
   "git pull --ff-only",
   "mise upgrade",
   "mise bootstrap --yes",
+  "node scripts/dots.mjs vscode --prune",
 ]
 
 [tasks.save]

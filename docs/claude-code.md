@@ -91,12 +91,12 @@ To add another MCP server, add it to `home/.claude/mcp.json` and its npm package
 Third-party skills are tracked as a **list**, not as files:
 `home/.agents/skills.json` maps each GitHub repo to the skills taken
 from it. the `bootstrap` task installs them with
-`npx skills add <repo> -g -a claude-code opencode -s <names>` into `~/.agents/skills` with links from `~/.claude/skills`.
+`pnpm dlx skills add <repo> -g -a claude-code opencode -s <names>` into `~/.agents/skills` with links from `~/.claude/skills`.
 
 | To... | Do |
 |---|---|
-| Add a skill | `npx skills add <repo> -g -s <name>`, then `save` (it rewrites the list from `~/.agents/.skill-lock.json`) |
-| Remove one | `npx skills remove -g <name>`, then `save`; other machines keep it until removed there too |
+| Add a skill | `pnpm dlx skills add <repo> -g -s <name>`, then `save` (it rewrites the list from `~/.agents/.skill-lock.json`) |
+| Remove one | `pnpm dlx skills remove -g <name>`, then `save`; other machines keep it until removed there too |
 | Update all | `up` (re-runs the `bootstrap` task, which re-adds every skill) |
 
 The caveman skills come from its Claude plugin (`enabledPlugins` in

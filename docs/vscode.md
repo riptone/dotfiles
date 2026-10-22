@@ -39,14 +39,9 @@ encrypted like the other secrets (`config/vscode/profiles/Work/settings.json.age
 and `mise run secrets` decrypts it to `config/vscode/profiles/Work/settings.json`
 (0600, git-ignored).
 
-Edits made in VS Code land in the decrypted file, which git ignores. To keep
-one, re-encrypt it:
-
-```bash
-age -r "$(age-keygen -y ~/.config/age/key.txt)" -o config/vscode/profiles/Work/settings.json.age config/vscode/profiles/Work/settings.json
-```
-
-then `save`. Home and default settings are plain links: changes land in the
+Edits made in VS Code land in the decrypted file, which git ignores. `save`
+re-encrypts it into the `.age` when it changed, so they travel like everything
+else. Home and default settings are plain links: changes land in the
 repo straight away.
 
 ## Caveats

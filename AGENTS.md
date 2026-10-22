@@ -76,8 +76,8 @@ docs/                      the longer explanations
   work unchanged on every OS, so no absolute paths; dbhub expands `~`
   itself. The server's npm package goes in `[tools]` as `"npm:<pkg>"`.
   opencode keeps its own copy in `opencode.jsonc`.
-- **opencode is secondary** and kept minimal: `opencode.jsonc` and two
-  agents. Pin every
+- **opencode is secondary** and kept minimal: `opencode.jsonc`, its plugin
+  settings and one agent. Pin every
   third-party plugin version. A pinned plugin must not also be an `npm:` tool:
   opencode installs plugin packages itself.
 

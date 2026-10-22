@@ -12,16 +12,22 @@ upgrades it on every OS (`up`).
 | File | What |
 |---|---|
 | `opencode.jsonc` | Model, permissions, plugins (pinned), the dbhub MCP server, formatter |
-| `agents/` | `code-reviewer`, `security-engineer` (read-only subagents) |
-| `caveman-default.md` | Always-on terse-output instructions |
+| `oh-my-opencode-slim.jsonc` | Settings for the oh-my-opencode-slim plugin (agent presets, council) |
+| `dcp.jsonc` | Settings for the dynamic context pruning plugin |
+| `opencode-quota/quota-toast.jsonc` | Settings for the quota readout plugin |
+| `agents/code-reviewer.md` | A read-only review subagent |
+| `cli.json` | The TUI: theme (tokyonight), diffs, session behaviour |
+| `biome.jsonc` | Biome rules for the formatter |
+| `shell-strategy.md` | Notes on non-interactive shell flags (not referenced from `opencode.jsonc`) |
 
 Each file is a symlink; `~/.config/opencode` itself is a real directory. So
 what opencode writes there itself (a `package.json` and `node_modules` for
 the plugin SDK) stays out of this repo.
 
-Kept deliberately small. oh-my-opencode-slim (its agent presets, council and
-custom agents) and the context-pruning plugin were removed when Claude
-became the primary agent.
+Plugins in use: oh-my-opencode-slim (orchestration), `@tarquinen/opencode-dcp`
+(context pruning), `opencode-antigravity-auth`, `opencode-claude-auth`,
+`@dietrichgebert/ponytail` (lean modes) and `@slkiser/opencode-quota`. All are
+pinned in `opencode.jsonc`.
 
 ## Rules
 
@@ -37,6 +43,6 @@ became the primary agent.
 ## Windows performance
 
 opencode's SQLite session store grows with every streamed token. Defender
-re-scanning it, plus npx's `node_modules`, causes slow startup and stalls on
+re-scanning it, plus each MCP server's `node_modules`, causes slow startup and stalls on
 every response. Run `config/powershell/defender-exclusions.ps1` once from an
 **elevated** PowerShell.

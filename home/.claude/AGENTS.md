@@ -3,7 +3,7 @@
 These apply in every project. A project's own `AGENTS.md` / `CLAUDE.md`
 comes first where the two disagree. `~/.claude/CLAUDE.md` is a symlink to
 this file, and opencode loads it through `instructions` in `opencode.jsonc`.
-The source is `home/dot_claude/AGENTS.md` in the dotfiles repo.
+The source is `home/.claude/AGENTS.md` in the dotfiles repo.
 
 ## Voice
 

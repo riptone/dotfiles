@@ -38,13 +38,9 @@ insales project reads from it.) Claude is denied `Read`/`Edit` on
 
 ## Daily use
 
-Edit the decrypted file, re-encrypt it, commit:
-
-```bash
-$EDITOR ~/.doti/dbhub.toml
-age -r "$(age-keygen -y ~/.config/age/key.txt)" -o home/.doti/dbhub.toml.age ~/.doti/dbhub.toml
-save "dbhub: add source"
-```
+Edit the decrypted file (`~/.doti/dbhub.toml`, or the Work VS Code settings
+in VS Code), then `save`: it re-encrypts every secret whose decrypted copy
+changed, then commits and pushes.
 
 On your other machines, `up` pulls it and `mise run secrets` decrypts it.
 To add a new secret: encrypt it to `<target>.age` (files under `home/` land in

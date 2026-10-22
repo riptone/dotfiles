@@ -3,10 +3,11 @@
 // with mise). Run through the tasks in mise.toml:  node scripts/dots.mjs <cmd>
 //
 //   mcp           merge home/.claude/mcp.json into ~/.claude.json (only mcpServers)
-//   vscode        register profiles in VS Code's storage.json, install extensions
+//   vscode        register profiles in VS Code's storage.json, install missing extensions (--prune: remove the rest)
 //   skills        install home/.agents/skills.json for Claude Code and opencode
 //   secrets       decrypt every *.age in the repo next to itself (home/.doti is linked by hand, see below) (asks for the key passphrase once)
-//   save-lists    rewrite config/vscode/profiles.json and home/.agents/skills.json from this machine
+//   reencrypt     re-encrypt secrets whose decrypted copy changed on this machine
+//   save-lists    reencrypt, then rewrite config/vscode/profiles.json and home/.agents/skills.json
 import { execFileSync, spawnSync } from "node:child_process"
 import fs from "node:fs"
 import os from "node:os"
@@ -62,20 +63,35 @@ const commands = {
 
     const code = codeBin()
     if (!code) return console.log("vscode: not installed yet, skipping extensions")
-    const install = (ids, profile) => {
-      for (const id of ids) {
-        const args = ["--install-extension", id, ...(profile ? ["--profile", profile] : [])]
-        if (run(code, args, { stdio: "ignore" }).status) console.log(`  failed: ${id}`)
+    // List what is installed once per profile, then install only what is missing
+    // (a `code --install-extension` call per id is slow). `--prune` also removes
+    // what the list doesn't have; `up` passes it, bootstrap doesn't.
+    const prune = process.argv.includes("--prune")
+    const sync = (want, profile) => {
+      const base = profile ? ["--profile", profile] : []
+      const have = out(code, ["--list-extensions", ...base]).split(/\r?\n/).filter(Boolean)
+      const lower = (xs) => new Set(xs.map((x) => x.toLowerCase()))
+      for (const id of want.filter((id) => !lower(have).has(id.toLowerCase()))) {
+        if (run(code, ["--install-extension", id, ...base], { stdio: "ignore" }).status) console.log(`  failed: ${id}`)
+      }
+      if (!prune) return
+      for (const id of have.filter((id) => !lower(want).has(id.toLowerCase()))) {
+        // A dependency of another extension refuses to go; that is fine, it goes with its parent.
+        run(code, ["--uninstall-extension", id, ...base], { stdio: "ignore" })
+        console.log(`  removed: ${id}${profile ? ` (${profile})` : ""}`)
       }
     }
-    install(extensions)
-    for (const p of profiles) install(p.extensions, p.name)
+    sync(extensions)
+    for (const p of profiles) sync(p.extensions, p.name)
   },
 
-  // Install only; `skills add` overwrites, and removal is `npx skills remove -g <name>`.
+  // Install what the lock file doesn't have; `skills add` overwrites, so a
+  // source with every skill present is skipped. Removal is `pnpm dlx skills remove -g <name>`.
   skills() {
+    const lock = readJson(path.join(home, ".agents", ".skill-lock.json"), { skills: {} }).skills
     for (const [source, names] of Object.entries(data("skills"))) {
-      const r = run("npx", ["-y", "skills", "add", source, "-g", "-y", "-a", "claude-code", "opencode", "-s", ...names], {
+      if (names.every((n) => lock[n])) continue
+      const r = run("pnpm", ["dlx", "skills", "add", source, "-g", "-y", "-a", "claude-code", "opencode", "-s", ...names], {
         cwd: home,
         stdio: "ignore",
       })
@@ -106,15 +122,7 @@ const commands = {
       fs.renameSync(key + ".tmp", key)
       fs.chmodSync(key, 0o600)
     }
-    // Each secret sits in the repo as <target>.age. Files under home/ land in
-    // ~ (home/.doti/x.age -> ~/.doti/x); the rest decrypt in place, where a
-    // [dotfiles] entry links them.
-    const found = execFileSync("git", ["-C", repo, "ls-files", "*.age"], { encoding: "utf8" })
-      .split(/\r?\n/)
-      .filter(Boolean)
-    for (const rel of found) {
-      const plain = rel.slice(0, -".age".length)
-      const target = rel.startsWith("home/") ? path.join(home, plain.slice("home/".length)) : path.join(repo, plain)
+    for (const { rel, target } of secretFiles()) {
       fs.mkdirSync(path.dirname(target), { recursive: true, mode: 0o700 })
       const r = run("age", ["--decrypt", "--identity", key, "--output", target, path.join(repo, rel)])
       if (r.status) throw new Error(`could not decrypt ${rel}`)
@@ -123,9 +131,26 @@ const commands = {
     console.log("secrets: decrypted")
   },
 
+  // Re-encrypt every secret whose decrypted copy changed here (an edit made in
+  // VS Code to the Work settings, or by hand to ~/.doti). `save` runs this.
+  reencrypt() {
+    const key = path.join(home, ".config", "age", "key.txt")
+    if (!fs.existsSync(key)) return
+    const recipient = out("age-keygen", ["-y", key]).trim()
+    for (const { rel, target } of secretFiles()) {
+      if (!fs.existsSync(target)) continue
+      const enc = path.join(repo, rel)
+      const current = execFileSync("age", ["--decrypt", "--identity", key, enc], { stdio: ["ignore", "pipe", "ignore"], shell: win })
+      if (current.equals(fs.readFileSync(target))) continue
+      if (run("age", ["--encrypt", "--recipient", recipient, "--output", enc, target]).status) throw new Error(`could not encrypt ${rel}`)
+      console.log(`secrets: re-encrypted ${rel}`)
+    }
+  },
+
   // Refresh the vscode and skills lists from what is installed here, so installs and removals
   // made by hand are tracked. `mise run save` does this before committing.
   "save-lists"() {
+    commands.reencrypt()
     const code = codeBin()
     if (code) {
       const list = (profile) => {
@@ -151,6 +176,20 @@ const commands = {
       writeJson(file.skills, sorted)
     }
   },
+}
+
+// Each secret sits in the repo as <target>.age. Files under home/ land in ~
+// (home/.doti/x.age -> ~/.doti/x); the rest decrypt in place, where a
+// [dotfiles] entry links them.
+function secretFiles() {
+  return execFileSync("git", ["-C", repo, "ls-files", "*.age"], { encoding: "utf8" })
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .map((rel) => {
+      const plain = rel.slice(0, -".age".length)
+      const target = rel.startsWith("home/") ? path.join(home, plain.slice("home/".length)) : path.join(repo, plain)
+      return { rel, target }
+    })
 }
 
 function codeBin() {

@@ -3,7 +3,8 @@
 # Preview any change with `mise bootstrap --dry-run`.
 
 [tools]
-node = "lts"
+node = "lts"           # the runtime: scripts/dots.mjs and every npm tool run on it
+pnpm = "latest"        # the package manager: npm: tools install through it, and `pnpm dlx` replaces npx
 age = "latest"           # secrets: scripts/dots.mjs secrets
 gh = "latest"            # also fetches the age key (a secret gist)
 fd = "latest"
@@ -12,7 +13,7 @@ zoxide = "latest"
 starship = "latest"
 cloudflared = "latest"   # ssh to the Oracle VM (home/.ssh/config)
 opencode = "latest"
-"npm:@bytebase/dbhub" = "latest"   # MCP server, installed once so no agent pays an npx round trip
+"npm:@bytebase/dbhub" = "latest"   # MCP server, installed once so no agent pays a registry round trip on startup
 
 # Only what mise can't install as a plain binary: GUI apps and fonts.
 [bootstrap.packages]
@@ -41,7 +42,7 @@ login_shell = "/bin/zsh"
 # macOS settings. Find a key with `defaults read <domain>`, add it here.
 [bootstrap.macos.defaults]
 NSGlobalDomain = { AppleInterfaceStyle = "Dark", AppleShowAllExtensions = true }
-"com.apple.dock" = { autohide = true, show-recents = false, tilesize = 50 }
+"com.apple.dock" = { autohide = true, show-recents = false, tilesize = 50.0 }
 "com.apple.finder" = { FXPreferredViewStyle = "clmv", FXDefaultSearchScope = "SCcf", FXEnableExtensionChangeWarning = false, NewWindowTarget = "PfLo" }
 "com.apple.WindowManager" = { EnableTiledWindowMargins = false }
 
@@ -52,6 +53,9 @@ run = """
     killall Dock Finder 2>/dev/null || true
   fi
 """
+
+[settings.npm]
+package_manager = "pnpm"
 
 [env]
 HOMEBREW_NO_AUTO_UPDATE = "1"

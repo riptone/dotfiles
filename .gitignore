@@ -1,12 +1,10 @@
 .DS_Store
 *.bak.*
 
-# Plaintext secrets. Only their encrypted_*.age form belongs in this repo
-# (home/private_dot_doti/); these lines are the backstop for the day one is
-# copied here by hand.
+# Plaintext secrets. Only their *.age form belongs in this repo; these lines
+# are the backstop for the day one is copied here by hand.
 home/.doti/*
 !home/.doti/*.age
-bin/
 dbhub.toml
 mssql-envs.json
 insales-accounts.json
