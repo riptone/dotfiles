@@ -57,7 +57,7 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "opus[1m]",
+  "model": "opus",
   "hooks": {
     "PreToolUse": [
       {
@@ -84,12 +84,12 @@
   },
   "outputStyle": "Concise",
   "effortLevel": "high",
-  "autoUpdatesChannel": "latest",
-  "theme": "dark",
-  "switchModelsOnFlag": false,
   "modelSettings": {
     "claude-opus-5-5": {
-      "effortLevel": "high"
+      "effortLevel": "medium"
     }
-  }
+  },
+  "autoUpdatesChannel": "latest",
+  "theme": "dark",
+  "switchModelsOnFlag": false
 }

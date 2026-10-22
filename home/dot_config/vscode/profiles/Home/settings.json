@@ -135,4 +135,5 @@
     "main"
   ],
   "window.density.layout": "compact",
+  "git.blame.editorDecoration.enabled": true,
 }
