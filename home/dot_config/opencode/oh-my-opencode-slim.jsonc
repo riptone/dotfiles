@@ -1,0 +1,135 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  // ── Preset ──────────────────────────────────────────────────────
+  // All agents share one model; variant controls temperature/creativity.
+  // Explicit empty arrays to prevent undefined/string merge bugs
+  // in oh-my-opencode-slim@2.2.8 health check (line 40138-40151).
+  "disabled_tools": [],
+  "disabled_mcps": [],
+  // OMO 3.0.5 bundles 11 skills that overlap with ponytail or are rarely
+  // used. Each one costs its name+description in every prompt.
+  "disabled_skills": [
+    "ai-estimates",
+    "clonedeps",
+    "codemap",
+    "deanchor",
+    "deepwork",
+    "oh-my-opencode-slim",
+    "reflect",
+    "simplify",
+    "step-back",
+    "verification-planning",
+    "worktrees"
+  ],
+  "preset": "default",
+  "presets": {
+    "default": {
+      // ── Orchestrator ──────────────────────────────────────────
+      // Routes tasks to specialists. Needs strongest reasoning.
+      "orchestrator": {
+        "model": "opencode/big-pickle",
+        "variant": "high",
+        "skills": [
+          "*"
+        ],
+        "mcps": [
+          "*"
+        ]
+      },
+      // ── Oracle ────────────────────────────────────────────────
+      // Architecture, debugging, strategic advice. Read-only.
+      "oracle": {
+        "model": "opencode/big-pickle",
+        "variant": "high",
+        "skills": [
+          "*"
+        ],
+        "mcps": []
+      },
+      // ── Fixer ─────────────────────────────────────────────────
+      // Fast implementation. Doesn't need highest reasoning —
+      // gets context from orchestrator/oracle.
+      "fixer": {
+        "model": "opencode/big-pickle",
+        "variant": "low",
+        "skills": [],
+        "mcps": []
+      },
+      // ── Explorer ──────────────────────────────────────────────
+      // Fast codebase search (grep/glob). Free model (deepseek) — cheap.
+      "explorer": {
+        "model": "opencode/big-pickle",
+        "variant": "low",
+        "skills": [],
+        "mcps": []
+      },
+      // ── Librarian ─────────────────────────────────────────────
+      // External docs lookup. Uses built-in websearch (exa) + webfetch.
+      // Only list MCP servers that are actually configured: context7 and fetch
+      // were dropped, so this stays empty.
+      "librarian": {
+        "model": "opencode/big-pickle",
+        "variant": "low",
+        "skills": [],
+        "mcps": []
+      },
+      // ── Designer ──────────────────────────────────────────────
+      // UI/UX — creative work benefits from higher temperature.
+      "designer": {
+        "model": "opencode/big-pickle",
+        "variant": "high",
+        "skills": [
+          "*"
+        ],
+        "mcps": [
+          "*"
+        ]
+      },
+      // ── Council (SYNTHESIZER) ─────────────────────────────────
+      // This is the model that reconciles the councillors' independent
+      // answers into one final response. The councillor MEMBERS are
+      // defined in the top-level "council" block below. Keep this strong.
+      "council": {
+        "model": "opencode/big-pickle",
+        "variant": "high",
+        "skills": [
+          "*"
+        ],
+        "mcps": []
+      }
+    }
+  },
+  // ── Council members (ensemble) ───────────────────────────────────
+  // Two-layer feature (schema per omo-slim docs/council.md):
+  //   1. SYNTHESIZER = presets.<preset>.council.model (above).
+  //   2. COUNCILLORS = this block. Each answers the query independently;
+  //      each is registered as a subagent `councillor-<name>`.
+  // Invoke with `@council <query>` (uses default_preset). All members run on
+  // big-pickle: `opencode/mimo-v2.5-free` was removed from the account and any
+  // agent pinned to it failed with "Model unavailable".
+  // Test wiring with `@council test Council connectivity`.
+  // NOTE: council.master / master-* keys are DEPRECATED — do not use them.
+  "council": {
+    "default_preset": "default",
+    "presets": {
+      "default": {
+        "reviewer": {
+          "model": "opencode/big-pickle",
+          "prompt": "Focus on correctness: bugs, edge cases, race conditions, and failure modes. Be concrete about how the proposed approach could break."
+        },
+        "architect": {
+          "model": "opencode/big-pickle",
+          "prompt": "Focus on maintainability: module boundaries, coupling, naming, and long-term design. Flag decisions that are hard to reverse later."
+        },
+        "optimizer": {
+          "model": "opencode/big-pickle",
+          "prompt": "Focus on pragmatism: the simplest thing that works, performance, and avoiding over-engineering. Push back on unnecessary complexity."
+        }
+      }
+    }
+  },
+  // ── Custom Agents ────────────────────────────────────────────────
+  // These supplement the agents in ~/.config/opencode/agents/.
+  // The orchestrator uses orchestratorPrompt to know when to route here.
+  "agents": {}
+}

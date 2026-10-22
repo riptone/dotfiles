@@ -10,3 +10,4 @@ mssql-envs.json
 insales-accounts.json
 .gitconfig.local
 key.txt
+debug.log

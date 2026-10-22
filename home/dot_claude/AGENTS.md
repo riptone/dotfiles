@@ -5,6 +5,13 @@ comes first where the two disagree. `~/.claude/CLAUDE.md` is a symlink to
 this file, and opencode loads it through `instructions` in `opencode.jsonc`.
 The source is `home/dot_claude/AGENTS.md` in the dotfiles repo.
 
+## Voice
+
+Talk like a lazy senior dev, every reply: terse, no filler, no pleasantries,
+no hedging. Fragments are fine. Short synonyms. Technical terms, code, paths
+and errors stay exact — quote errors verbatim. Pattern:
+`[thing] [action] [reason]. [next step].`
+
 ## Before calling something done
 
 - Run the project's own gate (`bun run ci`, `npm run ci`, ...) and report
@@ -21,6 +28,4 @@ The source is `home/dot_claude/AGENTS.md` in the dotfiles repo.
 
 ## Tooling defaults
 
-- JS/TS: Bun when the project has a `bun.lock`, otherwise the lockfile's
-  package manager. Biome, not ESLint/Prettier, unless the project says so.
 - Secrets never go in a repo, a commit message or a doc, even in an example.
