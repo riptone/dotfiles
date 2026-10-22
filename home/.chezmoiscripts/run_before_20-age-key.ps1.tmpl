@@ -15,7 +15,7 @@ if ($LASTEXITCODE -ne 0) {
     gh auth login
     if ($LASTEXITCODE -ne 0) { throw 'gh auth login failed' }
 }
-$tmp = New-TemporaryFile
+$tmp = [IO.Path]::GetTempFileName()
 $tmpKey = "$key.tmp"
 try {
     # JSON is parsed here rather than with gh's --jq: Windows PowerShell 5 and

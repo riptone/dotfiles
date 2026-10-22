@@ -3,8 +3,10 @@
 # machine gets the same prompt, tools, and shortcuts.
 
 # User-level binaries, same as ~/.local/bin in .zprofile.
+# Compare whole entries: a PATH entry pointing at a file inside the folder
+# (claude.exe) would make a wildcard match skip the folder itself.
 $localBin = Join-Path $env:USERPROFILE '.local\bin'
-if ((Test-Path $localBin) -and ($env:PATH -notlike "*$localBin*")) {
+if ((Test-Path $localBin) -and ($env:PATH -split ';' -notcontains $localBin)) {
     $env:PATH = "$localBin;$env:PATH"
 }
 
