@@ -1,0 +1,59 @@
+# Global mise config, linked to ~/.config/mise/config.toml by the root
+# mise.toml. Everything a machine needs: tools, apps, macOS settings.
+# Preview any change with `mise bootstrap --dry-run`.
+
+[tools]
+node = "lts"
+age = "latest"           # secrets: scripts/dots.mjs secrets
+gh = "latest"            # also fetches the age key (a secret gist)
+fd = "latest"
+fzf = "latest"
+zoxide = "latest"
+starship = "latest"
+cloudflared = "latest"   # ssh to the Oracle VM (home/.ssh/config)
+opencode = "latest"
+"npm:@bytebase/dbhub" = "latest"   # MCP server, installed once so no agent pays an npx round trip
+
+# Only what mise can't install as a plain binary: GUI apps and fonts.
+[bootstrap.packages]
+"brew-cask:visual-studio-code" = { os = "macos" }
+"brew-cask:brave-browser" = { os = "macos" }
+"brew-cask:wezterm" = { os = "macos" }
+"brew-cask:ghostty" = { os = "macos" }
+"brew-cask:font-jetbrains-mono-nerd-font" = { os = "macos" }
+"brew-cask:hiddenbar" = { os = "macos" }
+
+"winget:Git.Git" = { os = "windows" }
+"winget:Microsoft.PowerShell" = { os = "windows" }
+"winget:Microsoft.VisualStudioCode" = { os = "windows" }
+"winget:Brave.Brave" = { os = "windows" }
+"winget:wez.wezterm" = { os = "windows" }
+"winget:DEVCOM.JetBrainsMonoNerdFont" = { os = "windows" }
+
+# zsh plugins are plain git clones, no framework and no package manager.
+[bootstrap.repos]
+"~/.zsh/plugins/zsh-autosuggestions" = { url = "https://github.com/zsh-users/zsh-autosuggestions.git" }
+"~/.zsh/plugins/fast-syntax-highlighting" = { url = "https://github.com/zdharma-continuum/fast-syntax-highlighting.git" }
+
+[bootstrap.user]
+login_shell = "/bin/zsh"
+
+# macOS settings. Find a key with `defaults read <domain>`, add it here.
+[bootstrap.macos.defaults]
+NSGlobalDomain = { AppleInterfaceStyle = "Dark", AppleShowAllExtensions = true }
+"com.apple.dock" = { autohide = true, show-recents = false, tilesize = 50 }
+"com.apple.finder" = { FXPreferredViewStyle = "clmv", FXDefaultSearchScope = "SCcf", FXEnableExtensionChangeWarning = false, NewWindowTarget = "PfLo" }
+"com.apple.WindowManager" = { EnableTiledWindowMargins = false }
+
+[bootstrap.hooks.post-defaults]
+run = """
+  if [ "$(uname)" = "Darwin" ]; then
+    defaults write com.apple.finder NewWindowTargetPath -string "file://$HOME/Downloads/"
+    killall Dock Finder 2>/dev/null || true
+  fi
+"""
+
+[env]
+HOMEBREW_NO_AUTO_UPDATE = "1"
+HOMEBREW_NO_INSTALL_CLEANUP = "1"
+HOMEBREW_NO_ENV_HINTS = "1"

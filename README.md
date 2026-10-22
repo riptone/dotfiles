@@ -5,56 +5,51 @@
 **Bare machine to fully configured, in one command.**
 
 ![macOS](https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=white)
-![Linux](https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black)
 ![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white)
-![chezmoi](https://img.shields.io/badge/chezmoi-managed-4B8BBE)
+![mise](https://img.shields.io/badge/mise-managed-F5A97F)
 
 </div>
 
 ---
 
-Cross-platform config for macOS, Linux and Windows, managed with
-[chezmoi](https://chezmoi.io). One command installs the packages, links the
-configs into `$HOME` and decrypts the secrets.
+Cross-platform config for macOS and Windows, managed with
+[mise](https://mise.jdx.dev). One command installs the tools and apps, links
+the configs into `$HOME`, applies the macOS settings and decrypts the secrets.
 
 ## Quick start
 
-A new machine:
+macOS:
 
 ```bash
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply riptone
+curl -fsSL https://raw.githubusercontent.com/riptone/dotfiles/main/scripts/install.sh | sh
 ```
+
+Windows (PowerShell, with **Developer Mode** on so symlinks work):
 
 ```powershell
-iex "&{$(irm 'https://get.chezmoi.io/ps1')} -b ~/.local/bin -- init --apply riptone"
+irm https://raw.githubusercontent.com/riptone/dotfiles/main/scripts/install.ps1 | iex
 ```
 
-The Windows installer puts the binary in `.\bin` unless `-b` says otherwise,
-and this repo's PowerShell profile only adds `~/.local/bin` to `PATH`.
-
-On first run it asks you to log in to `gh` (if you aren't already) and for
-your passphrase, once. On Windows, symlinks need **Developer Mode**
-(Settings → System → For developers) or an elevated shell.
+It clones to `~/dotfiles`, installs mise and runs `mise bootstrap`, which is
+destructive and runs everything declared. To look first: `... | sh -s -- --dry-run`,
+or on Windows set `$env:DOTFILES_DRY_RUN = 1` before the line. On first run it
+asks you to log in to `gh` and for your passphrase, once (the age key, see
+[docs/secrets.md](docs/secrets.md)).
 
 ## Everyday
 
-Two commands, one per direction:
-
 | | Command | Does |
 |---|---|---|
-| **In** | `up` | Updates everything: brew / winget, npm, VS Code extensions, skills, then pulls this repo and applies it |
-| **Out** | `save [message]` | Saves this machine's changes: refreshes the VS Code extension and skill lists, re-encrypts changed secrets, commits and pushes |
-
-Everything else is `cz <command>` (`cz` = `chezmoi`):
+| **In** | `up` | Pulls this repo, upgrades every tool, re-runs bootstrap |
+| **Out** | `save [message]` | Refreshes the VS Code extension and skill lists, commits and pushes |
 
 | Do this | Command |
 |---|---|
-| What's changed | `cz status` |
-| Preview what `apply` would change | `cz diff` |
-| Edit a secret (opens VS Code, re-encrypts on close) | `cz edit ~/.doti/dbhub.toml` |
-| Start managing a file / a secret | `cz add FILE` / `cz add --encrypt FILE` |
-| Open a shell in the repo | `cz cd` |
-| Something's off | `cz doctor` |
+| Preview what bootstrap would change | `mise bootstrap --dry-run` |
+| What a re-apply would change | `mise dot diff` / `mise dot status` |
+| Decrypt secrets | `mise run secrets` |
+| Add a tool | one line under `[tools]` in `config/mise/config.toml` |
+| Go to the repo | `dots` |
 
 Configs are **symlinks** into this repo, so editing `~/.zshrc` edits the
 tracked file, and so does an app changing its own settings. `save` commits
@@ -63,48 +58,38 @@ whatever changed.
 ## Layout
 
 ```
-home/                         everything that lands in $HOME
-  .chezmoidata/packages.yaml  every package, per OS
-  .chezmoiscripts/            package installs, age key, git hooks
-  dot_zshrc, dot_zprofile, dot_zsh/
-  dot_gitconfig, dot_config/git/
-  dot_claude/                 Claude Code: settings.json, global AGENTS.md (CLAUDE.md links to it)
-  modify_dot_claude.json      adds the MCP servers (mcp.yaml) to ~/.claude.json
-  dot_config/opencode/        opencode
-  dot_config/ghostty/, dot_config/starship.toml
-  dot_config/vscode/          VS Code settings, Home + Work profiles
-  Library/, AppData/          links from VS Code's own folders to the above
-  private_dot_doti/           encrypted secrets
-  Documents/, AppData/Local/  PowerShell profile, Windows Terminal (Windows only)
-.githooks/                    pre-commit secret scan
-scripts/windows/              run-by-hand extras
+mise.toml                 what links where ([dotfiles]) and the tasks: bootstrap, secrets, up, save
+config/mise/config.toml   tools, apps, macOS settings, zsh plugin repos
+home/                     links into ~         (.zshrc, .gitconfig, .claude/, .ssh/config)
+config/                   links into ~/.config (opencode, starship, git, wezterm, ghostty, vscode, powershell)
+*.age                     secrets, encrypted, next to where they land
+scripts/                  install.sh + install.ps1 (the one-liners), dots.mjs (the glue, node)
 docs/
 ```
 
+Per-OS differences are `variants = [{ os = "..." }]` on a `[dotfiles]` entry
+or `os =` on a package, never duplicated files.
+
 ## What gets installed
 
-Edit **`home/.chezmoidata/packages.yaml`**; the next `chezmoi apply`
-installs what's new.
+Edit **`config/mise/config.toml`**.
 
-- **CLI:** git, curl, node, bun, gh, gitleaks, fd, fzf, zoxide, starship,
-  rtk, topgrade, opencode (Claude comes with its VS Code extension)
-- **MCP servers:** `@bytebase/dbhub`
-- **zsh:** zsh-autosuggestions, zsh-fast-syntax-highlighting (PSReadLine on Windows)
-- **GUI:** VS Code, Brave, Ghostty (macOS) or Windows Terminal, hiddenbar (macOS)
-- **Font:** JetBrainsMono Nerd Font
+- **CLI (mise):** node, age, gh, fd, fzf, zoxide, starship, cloudflared, opencode
+- **MCP server (mise):** `@bytebase/dbhub`
+- **GUI + font:** VS Code, Brave, WezTerm, Ghostty and hiddenbar (macOS), via brew casks; VS Code, Brave, WezTerm via winget on Windows
+- **zsh:** autosuggestions + fast-syntax-highlighting, cloned to `~/.zsh/plugins` (PSReadLine on Windows)
 
-VS Code settings, profiles and extensions **are** managed here (its own
-Settings Sync is off); Brave uses Brave Sync. macOS settings (Dock, Finder,
-dark mode) are a script of `defaults write` lines.
+VS Code settings, profiles and extensions are managed here (Settings Sync is
+off); Brave uses Brave Sync. macOS settings (Dock, Finder, dark mode) are
+`[bootstrap.macos.defaults]`.
 
 ## Docs
 
 | | |
 |---|---|
-| [docs/how-it-works.md](docs/how-it-works.md) | **Start here:** what `apply` does, the file-name prefixes, what each folder is for |
-| [docs/claude-code.md](docs/claude-code.md) | Claude Code: settings, rtk, MCP servers |
+| [docs/claude-code.md](docs/claude-code.md) | Claude Code: settings, MCP servers, skills |
 | [docs/secrets.md](docs/secrets.md) | How the encrypted secrets and the age key work |
 | [docs/vscode.md](docs/vscode.md) | VS Code: profiles, extensions, the encrypted Work settings |
-| [docs/opencode.md](docs/opencode.md) | opencode: config, plugin rules, `/vacuum` and `/versions` |
-| [docs/cheatsheet.md](docs/cheatsheet.md) | Ghostty keys, fzf, zoxide, git aliases and the rest |
+| [docs/opencode.md](docs/opencode.md) | opencode: config and plugin rules |
+| [docs/cheatsheet.md](docs/cheatsheet.md) | Terminal keys, fzf, zoxide, git aliases and the rest |
 | [AGENTS.md](AGENTS.md) | Rules for agents editing this repo (`CLAUDE.md` is a symlink to it) |
