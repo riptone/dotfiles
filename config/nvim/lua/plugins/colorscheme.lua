@@ -5,7 +5,7 @@ return {
     priority = 1000,
     lazy = false,
     config = function()
-      require("pierre").setup({ style = "dark" })
+      require("pierre").setup({ style = "dark-soft" })
       vim.cmd.colorscheme("pierre")
     end,
   },

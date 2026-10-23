@@ -9,16 +9,17 @@ upgrades it on every OS (`up`).
 
 ## What's managed (`config/opencode/`)
 
-| File | What |
-|---|---|
-| `opencode.jsonc` | Model, permissions, plugins (pinned), the dbhub MCP server, formatter |
-| `oh-my-opencode-slim.jsonc` | Settings for the oh-my-opencode-slim plugin (agent presets, council) |
-| `dcp.jsonc` | Settings for the dynamic context pruning plugin |
-| `opencode-quota/quota-toast.jsonc` | Settings for the quota readout plugin |
-| `agents/code-reviewer.md` | A read-only review subagent |
-| `cli.json` | The TUI: theme (`system`, follows the terminal), diffs, session behaviour |
-| `biome.jsonc` | Biome rules for the formatter |
-| `shell-strategy.md` | Notes on non-interactive shell flags (not referenced from `opencode.jsonc`) |
+| File                               | What                                                                        |
+| ---------------------------------- | --------------------------------------------------------------------------- |
+| `opencode.jsonc`                   | Model, permissions, plugins (pinned), the dbhub MCP server, formatter       |
+| `oh-my-opencode-slim.jsonc`        | Settings for the oh-my-opencode-slim plugin (agent presets, council)        |
+| `dcp.jsonc`                        | Settings for the dynamic context pruning plugin                             |
+| `opencode-quota/quota-toast.jsonc` | Settings for the quota readout plugin                                       |
+| `agents/code-reviewer.md`          | A read-only review subagent                                                 |
+| `cli.json`                         | The TUI: theme (`pierre-dark-soft`), diffs, session behaviour               |
+| `themes/pierre-dark-soft.json`     | A custom Pierre Dark Soft theme for the TUI                                 |
+| `biome.jsonc`                      | Biome rules for the formatter                                               |
+| `shell-strategy.md`                | Notes on non-interactive shell flags (not referenced from `opencode.jsonc`) |
 
 On macOS each file is a symlink; `~/.config/opencode` itself is a real
 directory. On Windows mise copies these files instead (directory

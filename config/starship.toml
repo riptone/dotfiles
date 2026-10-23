@@ -22,12 +22,12 @@ $character"""
 palette = "pierre"
 
 [palettes.pierre]
-blue    = "#009fff"
+blue    = "#69b1ff"
 green   = "#0dbe4e"
 purple  = "#e130ac"
 yellow  = "#ffca00"
 red     = "#ff2e3f"
-comment = "#737373"
+comment = "#636363"
 
 [directory]
 style = "bold blue"

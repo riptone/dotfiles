@@ -1,8 +1,8 @@
-# Pierre dark, from pierrecomputer.pierre-theme (VS Code).
+# Pierre dark-soft, from pierrecomputer.pierre-theme (VS Code).
 background = #171717
-foreground = #a3a3a3
-cursor-color = #009fff
-selection-background = #19283c
+foreground = #8a8a8a
+cursor-color = #69b1ff
+selection-background = #1f3e5e
 selection-foreground = #fafafa
 
 palette = 0=#171717

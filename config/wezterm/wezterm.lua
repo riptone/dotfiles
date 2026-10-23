@@ -1,4 +1,4 @@
--- One config for macOS and Windows. Mirrors ghostty/config: Pierre dark,
+-- One config for macOS and Windows. Mirrors ghostty/config: Pierre dark-soft,
 -- JetBrains Mono, ctrl+a leader with vim-direction splits.
 local wezterm = require("wezterm")
 local act = wezterm.action
@@ -9,10 +9,10 @@ local windows = wezterm.target_triple:find("windows") ~= nil
 
 config.colors = {
   background = "#171717",
-  foreground = "#a3a3a3",
-  cursor_bg = "#009fff",
+  foreground = "#8a8a8a",
+  cursor_bg = "#69b1ff",
   cursor_fg = "#171717",
-  selection_bg = "#19283c",
+  selection_bg = "#1f3e5e",
   selection_fg = "#fafafa",
   ansi = {
     "#171717", "#ff2e3f", "#0dbe4e", "#ffca00",
