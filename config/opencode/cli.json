@@ -3,19 +3,25 @@
 	"theme": {
 		"name": "tokyonight"
 	},
+	"highlights": false,
 	"diffs": {
-		"wrap": "word",
+		"wrap": "none",
 		"tree": true,
 		"single": false
 	},
 	"session": {
 		"sidebar": "auto",
 		"scrollbar": true,
-		"thinking": "show",
+		"thinking": "hide",
 		"permissions": "autoaccept",
-		"verbosity": "medium"
+		"image_preview": false,
+		"markdown": "source"
 	},
-	"animations": true,
+	"animations": false,
+	"cursor": {
+		"style": "block",
+		"blinking": false
+	},
 	"tabs": {
 		"mode": "on",
 		"scope": "global",
@@ -30,10 +36,12 @@
 		"image_preview": true
 	},
 	"terminal": {
+		"title": false,
 		"copy": "manual"
 	},
 	"debug": {
-		"devtools": true,
-		"turn_tokens": true
+		"devtools": false,
+		"turn_tokens": false,
+		"timing": false
 	}
 }

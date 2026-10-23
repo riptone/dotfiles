@@ -10,9 +10,11 @@ local windows = wezterm.target_triple:find("windows") ~= nil
 config.color_scheme = "Tokyo Night"
 config.font = wezterm.font("JetBrainsMono Nerd Font")
 config.font_size = mac and 14 or 11
+config.initial_cols = 117
+config.initial_rows = 27
 config.harfbuzz_features = { "calt", "liga", "dlig", "ss01", "ss02", "ss03", "ss04", "ss05", "ss06", "ss07", "ss08" }
 
-config.default_cursor_style = "BlinkingBar"
+config.default_cursor_style = "SteadyBar"
 config.hide_mouse_cursor_when_typing = true
 config.window_background_opacity = mac and 0.95 or 1.0
 config.macos_window_background_blur = 8
@@ -29,9 +31,8 @@ config.send_composed_key_when_right_alt_is_pressed = true
 
 if windows then
   config.default_prog = { "pwsh.exe", "-NoLogo" }
-  -- Intel Iris Xe flickers a line at the window edge with the OpenGL frontend.
-  config.front_end = "WebGpu"
-  config.webgpu_power_preference = "HighPerformance"
+  -- OpenGL uses less memory; switch back to WebGpu if the edge flickers.
+  config.front_end = "OpenGL"
 end
 
 config.leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 }
@@ -48,6 +49,12 @@ config.keys = {
   { key = "j", mods = "CTRL", action = act.ActivatePaneDirection("Down") },
   { key = "k", mods = "CTRL", action = act.ActivatePaneDirection("Up") },
   { key = "l", mods = "CTRL", action = act.ActivatePaneDirection("Right") },
+
+  -- Ctrl+Shift+Arrow is word selection in the app; don't use it for panes.
+  { key = "LeftArrow", mods = "CTRL|SHIFT", action = act.SendKey({ key = "LeftArrow", mods = "CTRL|SHIFT" }) },
+  { key = "RightArrow", mods = "CTRL|SHIFT", action = act.SendKey({ key = "RightArrow", mods = "CTRL|SHIFT" }) },
+  { key = "UpArrow", mods = "CTRL|SHIFT", action = act.SendKey({ key = "UpArrow", mods = "CTRL|SHIFT" }) },
+  { key = "DownArrow", mods = "CTRL|SHIFT", action = act.SendKey({ key = "DownArrow", mods = "CTRL|SHIFT" }) },
 
   { key = "f", mods = "LEADER", action = act.TogglePaneZoomState },
   { key = "x", mods = "LEADER", action = act.CloseCurrentPane({ confirm = false }) },
