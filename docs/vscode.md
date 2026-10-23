@@ -32,12 +32,14 @@ commits and pushes.
 
 ## Why Work is encrypted
 
-The Work settings hold `mssql.connections`: the client server addresses and
-usernames saved by the SQL Server extension. Their passwords live in the
-keychain, not in the file. The repo is public, so the whole file is
-encrypted like the other secrets (`config/vscode/profiles/Work/settings.json.age`),
+The Work settings hold DBCode's connection list (`dbcode.connections` plus
+`dbcode.connectionGroups`): client server addresses, databases and usernames.
+The `password` fields are empty, so no passwords are
+stored in this file. The repo is public, so the whole file is
+encrypted like the other secrets
+(`config/vscode/profiles/Work/settings.json.age`),
 and `mise run secrets` decrypts it to `config/vscode/profiles/Work/settings.json`
-(0600, git-ignored).
+(git-ignored; `0600` on Unix).
 
 Edits made in VS Code land in the decrypted file, which git ignores. `save`
 re-encrypts it into the `.age` when it changed, so they travel like everything
@@ -49,5 +51,5 @@ repo straight away.
 - **Close VS Code before the first `mise bootstrap` on a new machine.** It
   rewrites `storage.json` while running and could drop the profile entries.
   Just apply again if it does.
-- **Connection passwords don't travel.** The SQL Server extension keeps them
-  in the OS keychain, so each machine asks for them once.
+- **Database passwords don't travel.** They aren't in the settings file, so
+  each machine may ask for them once.

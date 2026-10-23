@@ -48,10 +48,10 @@ NSGlobalDomain = { AppleInterfaceStyle = "Dark", AppleShowAllExtensions = true }
 
 [bootstrap.hooks.post-defaults]
 run = """
-  if [ "$(uname)" = "Darwin" ]; then
-    defaults write com.apple.finder NewWindowTargetPath -string "file://$HOME/Downloads/"
-    killall Dock Finder 2>/dev/null || true
-  fi
+  {% if os() == "macos" %}
+  defaults write com.apple.finder NewWindowTargetPath -string "file://$HOME/Downloads/"
+  killall Dock Finder 2>/dev/null || true
+  {% endif %}
 """
 
 [settings.npm]

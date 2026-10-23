@@ -1,24 +1,8 @@
 {
-  "anthropics/skills": [
-    "frontend-design"
-  ],
-  "cloudflare/skills": [
-    "cloudflare",
-    "workers-best-practices",
-    "wrangler"
-  ],
-  "mattpocock/skills": [
-    "grill-me",
-    "improve-codebase-architecture"
-  ],
-  "sveltejs/ai-tools": [
-    "svelte-code-writer",
-    "svelte-core-bestpractices"
-  ],
-  "vercel-labs/agent-browser": [
-    "agent-browser"
-  ],
-  "vercel-labs/skills": [
-    "find-skills"
-  ]
+	"anthropics/skills": ["frontend-design"],
+	"cloudflare/skills": ["cloudflare", "workers-best-practices", "wrangler"],
+	"mattpocock/skills": ["grill-me", "improve-codebase-architecture"],
+	"sveltejs/ai-tools": ["svelte-code-writer", "svelte-core-bestpractices"],
+	"vercel-labs/agent-browser": ["agent-browser"],
+	"vercel-labs/skills": ["find-skills"]
 }

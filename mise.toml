@@ -25,6 +25,8 @@
 "~/.config/starship.toml" = "config/starship.toml"
 "~/.config/git" = { source = "config/git", mode = "symlink-each" }
 "~/.config/opencode" = { source = "config/opencode", mode = "symlink-each" }
+"~/.config/ponytail/config.json" = { source = "config/ponytail/config.json", variants = [{ os = "macos" }] }
+"~/AppData/Roaming/ponytail/config.json" = { source = "config/ponytail/config.json", variants = [{ os = "windows" }] }
 "~/.config/wezterm" = { source = "config/wezterm", mode = "symlink-each" }
 "~/.config/ghostty" = { source = "config/ghostty", mode = "symlink-each", variants = [{ os = "macos" }] }
 

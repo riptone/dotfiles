@@ -51,8 +51,10 @@ asks you to log in to `gh` and for your passphrase, once (the age key, see
 | Add a tool | one line under `[tools]` in `config/mise/config.toml` |
 | Go to the repo | `dots` |
 
-Configs are **symlinks** into this repo, so editing `~/.zshrc` edits the
-tracked file, and so does an app changing its own settings. `save` commits
+Configs live in this repo and are **linked into place**, so editing `~/.zshrc`
+edits the tracked file, and so does an app changing its own settings. On
+Windows, mise copies a few directory-based configs instead of linking them;
+re-run `mise dot apply` after editing those in the repo. `save` commits
 whatever changed.
 
 ## Layout
@@ -61,7 +63,7 @@ whatever changed.
 mise.toml                 what links where ([dotfiles]) and the tasks: bootstrap, secrets, up, save
 config/mise/config.toml   tools, apps, macOS settings, zsh plugin repos
 home/                     links into ~         (.zshrc, .gitconfig, .claude/, .ssh/config)
-config/                   links into ~/.config (opencode, starship, git, wezterm, ghostty, vscode, powershell)
+config/                   app configs linked by mise.toml (opencode, starship, git, wezterm, ghostty, vscode, powershell, ponytail)
 *.age                     secrets, encrypted, next to where they land
 scripts/                  install.sh + install.ps1 (the one-liners), dots.mjs (the glue, node)
 docs/
@@ -74,9 +76,9 @@ or `os =` on a package, never duplicated files.
 
 Edit **`config/mise/config.toml`**.
 
-- **CLI (mise):** node, age, gh, fd, fzf, zoxide, starship, cloudflared, opencode
+- **CLI (mise):** node, pnpm, age, gh, fd, fzf, zoxide, starship, cloudflared, opencode
 - **MCP server (mise):** `@bytebase/dbhub`
-- **GUI + font:** VS Code, Brave, WezTerm, Ghostty and hiddenbar (macOS), via brew casks; VS Code, Brave, WezTerm via winget on Windows
+- **Apps + font:** VS Code, Brave, WezTerm, Ghostty, JetBrains Mono Nerd Font and hiddenbar (macOS) via brew casks; Git, PowerShell, VS Code, Brave, WezTerm and the font via winget on Windows
 - **zsh:** autosuggestions + fast-syntax-highlighting, cloned to `~/.zsh/plugins` (PSReadLine on Windows)
 
 VS Code settings, profiles and extensions are managed here (Settings Sync is
@@ -87,7 +89,7 @@ off); Brave uses Brave Sync. macOS settings (Dock, Finder, dark mode) are
 
 | | |
 |---|---|
-| [docs/claude-code.md](docs/claude-code.md) | Claude Code: settings, MCP servers, skills |
+| [docs/claude-code.md](docs/claude-code.md) | Claude Code: settings, plugins, MCP servers, skills |
 | [docs/secrets.md](docs/secrets.md) | How the encrypted secrets and the age key work |
 | [docs/vscode.md](docs/vscode.md) | VS Code: profiles, extensions, the encrypted Work settings |
 | [docs/opencode.md](docs/opencode.md) | opencode: config and plugin rules |

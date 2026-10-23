@@ -1,263 +1,276 @@
 {
-  "$schema": "https://opencode.ai/config.json",
-  "model": "opencode/big-pickle",
-  // shell intentionally unset: let opencode auto-pick per-OS
-  // (macOS/Linux -> $SHELL; Windows -> pwsh/cmd). A hardcoded
-  // "/bin/zsh" does not exist on Windows and breaks shell tooling.
-  // Update policy for the global config only (project values are ignored).
-  "update": "notify",
-  // V2: one ordered `permissions` array. The LAST matching rule wins, so every
-  // broad "ask" comes first, then the allows, then the denies.
-  // Actions: shell, edit, read, websearch, subagent, skill, mcp, ...
-  "permissions": [
-    { "action": "edit", "resource": "*", "effect": "ask" },
-    { "action": "shell", "resource": "*", "effect": "ask" },
-    // ---- shell: read-only file inspection -------------------------------
-    { "action": "shell", "resource": "ls *", "effect": "allow" },
-    { "action": "shell", "resource": "cat *", "effect": "allow" },
-    { "action": "shell", "resource": "head *", "effect": "allow" },
-    { "action": "shell", "resource": "tail *", "effect": "allow" },
-    { "action": "shell", "resource": "wc *", "effect": "allow" },
-    { "action": "shell", "resource": "sort *", "effect": "allow" },
-    { "action": "shell", "resource": "uniq *", "effect": "allow" },
-    { "action": "shell", "resource": "diff *", "effect": "allow" },
-    { "action": "shell", "resource": "file *", "effect": "allow" },
-    { "action": "shell", "resource": "stat *", "effect": "allow" },
-    // ---- shell: filesystem ops ------------------------------------------
-    { "action": "shell", "resource": "mkdir *", "effect": "allow" },
-    { "action": "shell", "resource": "touch *", "effect": "allow" },
-    { "action": "shell", "resource": "cp *", "effect": "allow" },
-    { "action": "shell", "resource": "mv *", "effect": "allow" },
-    { "action": "shell", "resource": "chmod *", "effect": "allow" },
-    { "action": "shell", "resource": "ln -s *", "effect": "allow" },
-    { "action": "shell", "resource": "mktemp *", "effect": "allow" },
-    { "action": "shell", "resource": "realpath *", "effect": "allow" },
-    { "action": "shell", "resource": "readlink *", "effect": "allow" },
-    { "action": "shell", "resource": "dirname *", "effect": "allow" },
-    { "action": "shell", "resource": "basename *", "effect": "allow" },
-    { "action": "shell", "resource": "tar *", "effect": "allow" },
-    { "action": "shell", "resource": "zip *", "effect": "allow" },
-    { "action": "shell", "resource": "unzip *", "effect": "allow" },
-    // ---- shell: search --------------------------------------------------
-    { "action": "shell", "resource": "rg *", "effect": "allow" },
-    { "action": "shell", "resource": "fd *", "effect": "allow" },
-    { "action": "shell", "resource": "find *", "effect": "allow" },
-    { "action": "shell", "resource": "grep *", "effect": "allow" },
-    { "action": "shell", "resource": "sed *", "effect": "allow" },
-    { "action": "shell", "resource": "awk *", "effect": "allow" },
-    // ---- shell: info ----------------------------------------------------
-    { "action": "shell", "resource": "echo *", "effect": "allow" },
-    { "action": "shell", "resource": "printf *", "effect": "allow" },
-    { "action": "shell", "resource": "pwd", "effect": "allow" },
-    { "action": "shell", "resource": "which *", "effect": "allow" },
-    { "action": "shell", "resource": "type *", "effect": "allow" },
-    { "action": "shell", "resource": "command *", "effect": "allow" },
-    { "action": "shell", "resource": "env", "effect": "allow" },
-    { "action": "shell", "resource": "date *", "effect": "allow" },
-    { "action": "shell", "resource": "uname *", "effect": "allow" },
-    { "action": "shell", "resource": "whoami", "effect": "allow" },
-    { "action": "shell", "resource": "id", "effect": "allow" },
-    { "action": "shell", "resource": "ps *", "effect": "allow" },
-    // ---- shell: vcs -----------------------------------------------------
-    { "action": "shell", "resource": "git *", "effect": "allow" },
-    { "action": "shell", "resource": "gh *", "effect": "allow" },
-    // ---- shell: package managers ---------------------------------------
-    { "action": "shell", "resource": "brew *", "effect": "allow" },
-    { "action": "shell", "resource": "npm *", "effect": "allow" },
-    { "action": "shell", "resource": "npx *", "effect": "allow" },
-    { "action": "shell", "resource": "pnpm *", "effect": "allow" },
-    { "action": "shell", "resource": "yarn *", "effect": "allow" },
-    { "action": "shell", "resource": "bun *", "effect": "allow" },
-    { "action": "shell", "resource": "pip *", "effect": "allow" },
-    { "action": "shell", "resource": "pip3 *", "effect": "allow" },
-    { "action": "shell", "resource": "cargo *", "effect": "allow" },
-    { "action": "shell", "resource": "go *", "effect": "allow" },
-    // ---- shell: runtimes ------------------------------------------------
-    { "action": "shell", "resource": "node *", "effect": "allow" },
-    { "action": "shell", "resource": "deno *", "effect": "allow" },
-    { "action": "shell", "resource": "python3 *", "effect": "allow" },
-    { "action": "shell", "resource": "ruby *", "effect": "allow" },
-    // ---- shell: network -------------------------------------------------
-    { "action": "shell", "resource": "curl *", "effect": "allow" },
-    { "action": "shell", "resource": "wget *", "effect": "allow" },
-    { "action": "shell", "resource": "ping *", "effect": "allow" },
-    { "action": "shell", "resource": "dig *", "effect": "allow" },
-    { "action": "shell", "resource": "host *", "effect": "allow" },
-    // ---- shell: build tools ---------------------------------------------
-    { "action": "shell", "resource": "make *", "effect": "allow" },
-    { "action": "shell", "resource": "cmake *", "effect": "allow" },
-    { "action": "shell", "resource": "tsc *", "effect": "allow" },
-    { "action": "shell", "resource": "eslint *", "effect": "allow" },
-    { "action": "shell", "resource": "prettier *", "effect": "allow" },
-    // ---- shell: macOS specific ------------------------------------------
-    { "action": "shell", "resource": "open ./*", "effect": "allow" },
-    { "action": "shell", "resource": "open ~/*", "effect": "allow" },
-    { "action": "shell", "resource": "open -R ./*", "effect": "allow" },
-    { "action": "shell", "resource": "open -R ~/*", "effect": "allow" },
-    { "action": "shell", "resource": "qlmanage *", "effect": "allow" },
-    { "action": "shell", "resource": "sw_vers *", "effect": "allow" },
-    { "action": "shell", "resource": "system_profiler *", "effect": "allow" },
-    { "action": "shell", "resource": "ioreg *", "effect": "allow" },
-    { "action": "shell", "resource": "mdfind *", "effect": "allow" },
-    // ---- shell: hard denies (must stay last) ----------------------------
-    { "action": "shell", "resource": "rm -rf /*", "effect": "deny" },
-    { "action": "shell", "resource": "rm -rf ~*", "effect": "deny" },
-    { "action": "shell", "resource": "sudo *", "effect": "deny" },
-    { "action": "shell", "resource": "su *", "effect": "deny" },
-    { "action": "shell", "resource": "doas *", "effect": "deny" },
-    { "action": "shell", "resource": "chown *", "effect": "deny" },
-    { "action": "shell", "resource": "chflags *", "effect": "deny" },
-    { "action": "shell", "resource": "dd *", "effect": "deny" },
-    { "action": "shell", "resource": "mkfs *", "effect": "deny" },
-    { "action": "shell", "resource": "diskutil *", "effect": "deny" },
-    { "action": "shell", "resource": "systemctl *", "effect": "deny" },
-    { "action": "shell", "resource": "launchctl *", "effect": "deny" },
-    { "action": "shell", "resource": "curl * | bash", "effect": "deny" },
-    { "action": "shell", "resource": "curl * | sh", "effect": "deny" },
-    { "action": "shell", "resource": "wget * | bash", "effect": "deny" },
-    { "action": "shell", "resource": "wget * | sh", "effect": "deny" },
-    { "action": "shell", "resource": "git push --force *", "effect": "deny" },
-    { "action": "shell", "resource": "git push -f *", "effect": "deny" },
-    { "action": "shell", "resource": "git reset --hard *", "effect": "deny" },
-    { "action": "shell", "resource": "git clean *", "effect": "deny" },
-    { "action": "shell", "resource": "git checkout -- *", "effect": "deny" },
-    { "action": "shell", "resource": "git stash drop *", "effect": "deny" },
-    { "action": "shell", "resource": "npm publish *", "effect": "deny" },
-    { "action": "shell", "resource": "pip install --break-system-packages *", "effect": "deny" },
-    { "action": "shell", "resource": "apt *", "effect": "deny" },
-    { "action": "shell", "resource": "apt-get *", "effect": "deny" },
-    { "action": "shell", "resource": "brew install --force *", "effect": "deny" },
-    { "action": "shell", "resource": "brew uninstall *", "effect": "deny" },
-    // ---- read ------------------------------------------------------------
-    { "action": "read", "resource": "*", "effect": "allow" },
-    { "action": "read", "resource": ".env", "effect": "deny" },
-    { "action": "read", "resource": ".env.*", "effect": "deny" },
-    { "action": "read", "resource": "*.env", "effect": "deny" },
-    { "action": "read", "resource": "*.env.*", "effect": "deny" },
-    // ---- websearch -------------------------------------------------------
-    // Backend is picked by `websearch.provider` below; this only removes the
-    // per-search approval prompt.
-    { "action": "websearch", "resource": "*", "effect": "allow" }
-  ],
-  "websearch": {
-    "provider": "exa"
-  },
-  "provider": {
-    "anthropic": {
-      "options": {
-        "timeout": 600000,
-        "chunkTimeout": 30000
-      }
-    }
-  },
-  "instructions": [
-    "~/.claude/AGENTS.md",
-    "Assume CI=true. No editors/pagers. Use yes/force flags always. Git: -m, --no-edit, --no-pager. No interactive: vim, nano, less, more, man."
-  ],
-  // Note: ~/.claude/skills and ~/.agents/skills are auto-discovered in V2.
-  // Only add `skills` here for extra local dirs or HTTP catalogs.
-  "plugins": [
-    // Orchestration: 16 agents + 9 tools. V2 loads it through ./server.
-    // 3.x is the V2-native line; roll back to 2.2.18 if a preset key breaks.
-    "oh-my-opencode-slim@3.0.5",
-    // Dynamic context pruning. 3.1.x is V1-only and fails to load; 3.2.0 is
-    // the first V2-native release (`{ id, setup }`).
-    "@tarquinen/opencode-dcp@3.2.0",
-    // Google Antigravity OAuth -> free Gemini/Antigravity models.
-    "opencode-antigravity-auth@2.1.1",
-    // Reuses the local Claude Code subscription credentials.
-    "opencode-claude-auth@3.0.0",
-    // Token-lean working modes. 5.x is V2-native; 4.x hooks never loaded.
-    "@dietrichgebert/ponytail@5.3.2",
-    // Quota / usage readout for Copilot, OpenAI, Antigravity, z.ai.
-    "@slkiser/opencode-quota@5.0.3"
-  ],
-  "mcp": {
-    "servers": {
-      // One server for every database. The sources live in ~/.doti/dbhub.toml,
-      // which `mise run secrets` decrypts from the repo (plaintext never is committed).
-      // dbhub expands the ~ itself, so this entry is the same on every OS.
-      // Installed by mise (config/mise/config.toml). Off by default:
-      // it registers two tools per database, so switch it on when you need it
-      // (/mcps, or flip `disabled` here).
-      "dbhub": {
-        "type": "local",
-        "command": ["dbhub", "--transport", "stdio", "--config=~/.doti/dbhub.toml"],
-        "disabled": true
-      }
-    }
-  },
-  "commands": {
-    "test": {
-      "template": "Run tests and report failures. Fix any broken tests.",
-      "description": "Run and fix tests"
-    },
-    "lint": {
-      "template": "Run the linter. Format and fix any auto-fixable issues, then report remaining problems.",
-      "description": "Lint and format code"
-    },
-    "typecheck": {
-      "template": "Run the type checker. Fix all type errors found.",
-      "description": "Run and fix type checks"
-    },
-    "deploy": {
-      "template": "Deploy the current project. Check for uncommitted changes first, then build and deploy.",
-      "description": "Deploy project"
-    },
-    "fix": {
-      "template": "Find and fix bugs in the current file or related files. Run tests after fixing.",
-      "description": "Fix bugs in current context"
-    }
-  },
-  "compaction": {
-    "auto": true,
-    // DCP prunes tool output first; this only bounds what native compaction
-    // keeps when it does fire.
-    "keep": {
-      "tokens": 15000
-    }
-  },
-  "formatter": {
-    "biome": {
-      "command": ["npx", "--yes", "@biomejs/biome@1.9.4", "format", "--write"],
-      "extensions": [
-        ".js",
-        ".jsx",
-        ".ts",
-        ".tsx",
-        ".css",
-        ".json",
-        ".jsonc",
-        ".astro"
-      ]
-    }
-  },
-  // V2: `policies` is top level (was experimental.policies).
-  // Empty on purpose: the old `provider.use` deny on `openai*` also blocked the
-  // ChatGPT/Codex subscription login, which bills the plan, not per token.
-  "policies": [],
-  "watcher": {
-    "ignore": [
-      "node_modules/**",
-      "dist/**",
-      ".git/**",
-      "target/**",
-      "build/**",
-      ".next/**",
-      ".angular/**",
-      ".astro/**",
-      ".cache/**",
-      "__pycache__/**",
-      "*.pyc",
-      ".DS_Store",
-      "*.swp",
-      "*.swo",
-      "*.log",
-      ".env*",
-      "vendor/**",
-      ".bundle/**",
-      ".terraform/**",
-      "*.tfstate*"
-    ]
-  }
+	"$schema": "https://opencode.ai/config.json",
+	"model": "opencode/big-pickle",
+	// shell intentionally unset: let opencode auto-pick per-OS
+	// (macOS/Linux -> $SHELL; Windows -> pwsh/cmd). A hardcoded
+	// "/bin/zsh" does not exist on Windows and breaks shell tooling.
+	// Update policy for the global config only (project values are ignored).
+	"update": "notify",
+	// V2: one ordered `permissions` array. The LAST matching rule wins, so every
+	// broad "ask" comes first, then the allows, then the denies.
+	// Actions: shell, edit, read, websearch, subagent, skill, mcp, ...
+	"permissions": [
+		{ "action": "edit", "resource": "*", "effect": "ask" },
+		{ "action": "shell", "resource": "*", "effect": "ask" },
+		// ---- shell: read-only file inspection -------------------------------
+		{ "action": "shell", "resource": "ls *", "effect": "allow" },
+		{ "action": "shell", "resource": "cat *", "effect": "allow" },
+		{ "action": "shell", "resource": "head *", "effect": "allow" },
+		{ "action": "shell", "resource": "tail *", "effect": "allow" },
+		{ "action": "shell", "resource": "wc *", "effect": "allow" },
+		{ "action": "shell", "resource": "sort *", "effect": "allow" },
+		{ "action": "shell", "resource": "uniq *", "effect": "allow" },
+		{ "action": "shell", "resource": "diff *", "effect": "allow" },
+		{ "action": "shell", "resource": "file *", "effect": "allow" },
+		{ "action": "shell", "resource": "stat *", "effect": "allow" },
+		// ---- shell: filesystem ops ------------------------------------------
+		{ "action": "shell", "resource": "mkdir *", "effect": "allow" },
+		{ "action": "shell", "resource": "touch *", "effect": "allow" },
+		{ "action": "shell", "resource": "cp *", "effect": "allow" },
+		{ "action": "shell", "resource": "mv *", "effect": "allow" },
+		{ "action": "shell", "resource": "chmod *", "effect": "allow" },
+		{ "action": "shell", "resource": "ln -s *", "effect": "allow" },
+		{ "action": "shell", "resource": "mktemp *", "effect": "allow" },
+		{ "action": "shell", "resource": "realpath *", "effect": "allow" },
+		{ "action": "shell", "resource": "readlink *", "effect": "allow" },
+		{ "action": "shell", "resource": "dirname *", "effect": "allow" },
+		{ "action": "shell", "resource": "basename *", "effect": "allow" },
+		{ "action": "shell", "resource": "tar *", "effect": "allow" },
+		{ "action": "shell", "resource": "zip *", "effect": "allow" },
+		{ "action": "shell", "resource": "unzip *", "effect": "allow" },
+		// ---- shell: search --------------------------------------------------
+		{ "action": "shell", "resource": "rg *", "effect": "allow" },
+		{ "action": "shell", "resource": "fd *", "effect": "allow" },
+		{ "action": "shell", "resource": "find *", "effect": "allow" },
+		{ "action": "shell", "resource": "grep *", "effect": "allow" },
+		{ "action": "shell", "resource": "sed *", "effect": "allow" },
+		{ "action": "shell", "resource": "awk *", "effect": "allow" },
+		// ---- shell: info ----------------------------------------------------
+		{ "action": "shell", "resource": "echo *", "effect": "allow" },
+		{ "action": "shell", "resource": "printf *", "effect": "allow" },
+		{ "action": "shell", "resource": "pwd", "effect": "allow" },
+		{ "action": "shell", "resource": "which *", "effect": "allow" },
+		{ "action": "shell", "resource": "type *", "effect": "allow" },
+		{ "action": "shell", "resource": "command *", "effect": "allow" },
+		{ "action": "shell", "resource": "env", "effect": "allow" },
+		{ "action": "shell", "resource": "date *", "effect": "allow" },
+		{ "action": "shell", "resource": "uname *", "effect": "allow" },
+		{ "action": "shell", "resource": "whoami", "effect": "allow" },
+		{ "action": "shell", "resource": "id", "effect": "allow" },
+		{ "action": "shell", "resource": "ps *", "effect": "allow" },
+		// ---- shell: vcs -----------------------------------------------------
+		{ "action": "shell", "resource": "git *", "effect": "allow" },
+		{ "action": "shell", "resource": "gh *", "effect": "allow" },
+		// ---- shell: package managers ---------------------------------------
+		{ "action": "shell", "resource": "brew *", "effect": "allow" },
+		{ "action": "shell", "resource": "npm *", "effect": "allow" },
+		{ "action": "shell", "resource": "npx *", "effect": "allow" },
+		{ "action": "shell", "resource": "pnpm *", "effect": "allow" },
+		{ "action": "shell", "resource": "yarn *", "effect": "allow" },
+		{ "action": "shell", "resource": "bun *", "effect": "allow" },
+		{ "action": "shell", "resource": "pip *", "effect": "allow" },
+		{ "action": "shell", "resource": "pip3 *", "effect": "allow" },
+		{ "action": "shell", "resource": "cargo *", "effect": "allow" },
+		{ "action": "shell", "resource": "go *", "effect": "allow" },
+		// ---- shell: runtimes ------------------------------------------------
+		{ "action": "shell", "resource": "node *", "effect": "allow" },
+		{ "action": "shell", "resource": "deno *", "effect": "allow" },
+		{ "action": "shell", "resource": "python3 *", "effect": "allow" },
+		{ "action": "shell", "resource": "ruby *", "effect": "allow" },
+		// ---- shell: network -------------------------------------------------
+		{ "action": "shell", "resource": "curl *", "effect": "allow" },
+		{ "action": "shell", "resource": "wget *", "effect": "allow" },
+		{ "action": "shell", "resource": "ping *", "effect": "allow" },
+		{ "action": "shell", "resource": "dig *", "effect": "allow" },
+		{ "action": "shell", "resource": "host *", "effect": "allow" },
+		// ---- shell: build tools ---------------------------------------------
+		{ "action": "shell", "resource": "make *", "effect": "allow" },
+		{ "action": "shell", "resource": "cmake *", "effect": "allow" },
+		{ "action": "shell", "resource": "tsc *", "effect": "allow" },
+		{ "action": "shell", "resource": "eslint *", "effect": "allow" },
+		{ "action": "shell", "resource": "prettier *", "effect": "allow" },
+		// ---- shell: macOS specific ------------------------------------------
+		{ "action": "shell", "resource": "open ./*", "effect": "allow" },
+		{ "action": "shell", "resource": "open ~/*", "effect": "allow" },
+		{ "action": "shell", "resource": "open -R ./*", "effect": "allow" },
+		{ "action": "shell", "resource": "open -R ~/*", "effect": "allow" },
+		{ "action": "shell", "resource": "qlmanage *", "effect": "allow" },
+		{ "action": "shell", "resource": "sw_vers *", "effect": "allow" },
+		{ "action": "shell", "resource": "system_profiler *", "effect": "allow" },
+		{ "action": "shell", "resource": "ioreg *", "effect": "allow" },
+		{ "action": "shell", "resource": "mdfind *", "effect": "allow" },
+		// ---- shell: hard denies (must stay last) ----------------------------
+		{ "action": "shell", "resource": "rm -rf /*", "effect": "deny" },
+		{ "action": "shell", "resource": "rm -rf ~*", "effect": "deny" },
+		{ "action": "shell", "resource": "sudo *", "effect": "deny" },
+		{ "action": "shell", "resource": "su *", "effect": "deny" },
+		{ "action": "shell", "resource": "doas *", "effect": "deny" },
+		{ "action": "shell", "resource": "chown *", "effect": "deny" },
+		{ "action": "shell", "resource": "chflags *", "effect": "deny" },
+		{ "action": "shell", "resource": "dd *", "effect": "deny" },
+		{ "action": "shell", "resource": "mkfs *", "effect": "deny" },
+		{ "action": "shell", "resource": "diskutil *", "effect": "deny" },
+		{ "action": "shell", "resource": "systemctl *", "effect": "deny" },
+		{ "action": "shell", "resource": "launchctl *", "effect": "deny" },
+		{ "action": "shell", "resource": "curl * | bash", "effect": "deny" },
+		{ "action": "shell", "resource": "curl * | sh", "effect": "deny" },
+		{ "action": "shell", "resource": "wget * | bash", "effect": "deny" },
+		{ "action": "shell", "resource": "wget * | sh", "effect": "deny" },
+		{ "action": "shell", "resource": "git push --force *", "effect": "deny" },
+		{ "action": "shell", "resource": "git push -f *", "effect": "deny" },
+		{ "action": "shell", "resource": "git reset --hard *", "effect": "deny" },
+		{ "action": "shell", "resource": "git clean *", "effect": "deny" },
+		{ "action": "shell", "resource": "git checkout -- *", "effect": "deny" },
+		{ "action": "shell", "resource": "git stash drop *", "effect": "deny" },
+		{ "action": "shell", "resource": "npm publish *", "effect": "deny" },
+		{
+			"action": "shell",
+			"resource": "pip install --break-system-packages *",
+			"effect": "deny"
+		},
+		{ "action": "shell", "resource": "apt *", "effect": "deny" },
+		{ "action": "shell", "resource": "apt-get *", "effect": "deny" },
+		{
+			"action": "shell",
+			"resource": "brew install --force *",
+			"effect": "deny"
+		},
+		{ "action": "shell", "resource": "brew uninstall *", "effect": "deny" },
+		// ---- read ------------------------------------------------------------
+		{ "action": "read", "resource": "*", "effect": "allow" },
+		{ "action": "read", "resource": ".env", "effect": "deny" },
+		{ "action": "read", "resource": ".env.*", "effect": "deny" },
+		{ "action": "read", "resource": "*.env", "effect": "deny" },
+		{ "action": "read", "resource": "*.env.*", "effect": "deny" },
+		// ---- websearch -------------------------------------------------------
+		// Backend is picked by `websearch.provider` below; this only removes the
+		// per-search approval prompt.
+		{ "action": "websearch", "resource": "*", "effect": "allow" }
+	],
+	"websearch": {
+		"provider": "exa"
+	},
+	"provider": {
+		"anthropic": {
+			"options": {
+				"timeout": 600000,
+				"chunkTimeout": 30000
+			}
+		}
+	},
+	"instructions": [
+		"~/.claude/AGENTS.md",
+		"Assume CI=true. No editors/pagers. Use yes/force flags always. Git: -m, --no-edit, --no-pager. No interactive: vim, nano, less, more, man."
+	],
+	// Note: ~/.claude/skills and ~/.agents/skills are auto-discovered in V2.
+	// Only add `skills` here for extra local dirs or HTTP catalogs.
+	"plugins": [
+		// Orchestration: 16 agents + 9 tools. V2 loads it through ./server.
+		// 3.x is the V2-native line; roll back to 2.2.18 if a preset key breaks.
+		"oh-my-opencode-slim@3.0.5",
+		// Dynamic context pruning. 3.1.x is V1-only and fails to load; 3.2.0 is
+		// the first V2-native release (`{ id, setup }`).
+		"@tarquinen/opencode-dcp@3.2.0",
+		// Google Antigravity OAuth -> free Gemini/Antigravity models.
+		"opencode-antigravity-auth@2.1.1",
+		// Reuses the local Claude Code subscription credentials.
+		"opencode-claude-auth@3.0.0",
+		// Token-lean working modes. 5.x is V2-native; 4.x hooks never loaded.
+		"@dietrichgebert/ponytail@5.3.2",
+		// Quota / usage readout for Copilot, OpenAI, Antigravity, z.ai.
+		"@slkiser/opencode-quota@5.0.3"
+	],
+	"mcp": {
+		"servers": {
+			// One server for every database. The sources live in ~/.doti/dbhub.toml,
+			// which `mise run secrets` decrypts from the repo (plaintext never is committed).
+			// dbhub expands the ~ itself, so this entry is the same on every OS.
+			// Installed by mise (config/mise/config.toml). Off by default:
+			// it registers two tools per database, so switch it on when you need it
+			// (/mcps, or flip `disabled` here).
+			"dbhub": {
+				"type": "local",
+				"command": [
+					"dbhub",
+					"--transport",
+					"stdio",
+					"--config=~/.doti/dbhub.toml"
+				],
+				"disabled": true
+			}
+		}
+	},
+	"commands": {
+		"test": {
+			"template": "Run tests and report failures. Fix any broken tests.",
+			"description": "Run and fix tests"
+		},
+		"lint": {
+			"template": "Run the linter. Format and fix any auto-fixable issues, then report remaining problems.",
+			"description": "Lint and format code"
+		},
+		"typecheck": {
+			"template": "Run the type checker. Fix all type errors found.",
+			"description": "Run and fix type checks"
+		},
+		"deploy": {
+			"template": "Deploy the current project. Check for uncommitted changes first, then build and deploy.",
+			"description": "Deploy project"
+		},
+		"fix": {
+			"template": "Find and fix bugs in the current file or related files. Run tests after fixing.",
+			"description": "Fix bugs in current context"
+		}
+	},
+	"compaction": {
+		"auto": true,
+		// DCP prunes tool output first; this only bounds what native compaction
+		// keeps when it does fire.
+		"keep": {
+			"tokens": 15000
+		}
+	},
+	"formatter": {
+		"biome": {
+			"command": ["npx", "--yes", "@biomejs/biome@1.9.4", "format", "--write"],
+			"extensions": [
+				".js",
+				".jsx",
+				".ts",
+				".tsx",
+				".css",
+				".json",
+				".jsonc",
+				".astro"
+			]
+		}
+	},
+	// V2: `policies` is top level (was experimental.policies).
+	// Empty on purpose: the old `provider.use` deny on `openai*` also blocked the
+	// ChatGPT/Codex subscription login, which bills the plan, not per token.
+	"policies": [],
+	"watcher": {
+		"ignore": [
+			"node_modules/**",
+			"dist/**",
+			".git/**",
+			"target/**",
+			"build/**",
+			".next/**",
+			".angular/**",
+			".astro/**",
+			".cache/**",
+			"__pycache__/**",
+			"*.pyc",
+			".DS_Store",
+			"*.swp",
+			"*.swo",
+			"*.log",
+			".env*",
+			"vendor/**",
+			".bundle/**",
+			".terraform/**",
+			"*.tfstate*"
+		]
+	}
 }

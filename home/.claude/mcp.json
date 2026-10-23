@@ -1,12 +1,8 @@
 {
-  "dbhub": {
-    "type": "stdio",
-    "command": "dbhub",
-    "args": [
-      "--transport",
-      "stdio",
-      "--config=~/.doti/dbhub.toml"
-    ],
-    "env": {}
-  }
+	"dbhub": {
+		"type": "stdio",
+		"command": "dbhub",
+		"args": ["--transport", "stdio", "--config=~/.doti/dbhub.toml"],
+		"env": {}
+	}
 }

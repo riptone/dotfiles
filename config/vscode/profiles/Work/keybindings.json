@@ -1,11 +1,155 @@
 // Place your key bindings in this file to override the defaults
 [
     {
-    "key": "ctrl+tab",
-    "command": "workbench.action.nextEditor"
+        "key": "ctrl+shift+oem_3",
+        "command": "workbench.action.toggleMaximizedPanel"
     },
     {
-    "key": "ctrl+shift+tab",
-    "command": "workbench.action.previousEditor"
+        "key": "ctrl+t",
+        "command": "-workbench.action.showAllSymbols"
+    },
+    {
+        "key": "ctrl+t",
+        "command": "workbench.action.browser.newTab",
+        "when": "activeEditor == 'workbench.editor.browser'"
+    },
+    {
+        "key": "ctrl+t",
+        "command": "-workbench.action.browser.newTab",
+        "when": "activeEditor == 'workbench.editor.browser'"
+    },
+    {
+        "key": "ctrl+t",
+        "command": "workbench.action.files.newUntitledFile"
+    },
+    {
+        "key": "ctrl+n",
+        "command": "-workbench.action.files.newUntitledFile"
+    },
+    {
+        "key": "ctrl+shift+oem_7",
+        "command": "workbench.action.terminal.new",
+        "when": "terminalProcessSupported || terminalWebExtensionContributedProfile"
+    },
+    {
+        "key": "ctrl+shift+oem_3",
+        "command": "-workbench.action.terminal.new",
+        "when": "terminalProcessSupported || terminalWebExtensionContributedProfile"
+    },
+    {
+        "key": "ctrl+tab",
+        "command": "workbench.action.nextEditor"
+    },
+    {
+        "key": "ctrl+shift+tab",
+        "command": "workbench.action.previousEditor"
+    },
+    {
+        "key": "oem_1 backspace",
+        "command": "workbench.action.chat.focusTip",
+        "when": "inChat || inChat && inChatTip"
+    },
+    {
+        "key": "ctrl+shift+oem_2",
+        "command": "-workbench.action.chat.focusTip",
+        "when": "inChat || inChat && inChatTip"
+    },
+    {
+        "key": "ctrl+w",
+        "command": "workbench.action.terminal.killEditor",
+        "when": "terminalEditorFocus && terminalFocus && terminalHasBeenCreated || terminalEditorFocus && terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+w",
+        "command": "-workbench.action.terminal.killEditor",
+        "when": "terminalEditorFocus && terminalFocus && terminalHasBeenCreated || terminalEditorFocus && terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+f4",
+        "command": "-workbench.action.terminal.killEditor",
+        "when": "terminalEditorFocus && terminalFocus && terminalHasBeenCreated || terminalEditorFocus && terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+shift+oem_2",
+        "command": "workbench.action.terminal.killActiveTab",
+        "when": "terminalHasBeenCreated && terminalTabsFocus || terminalIsOpen && terminalTabsFocus || terminalProcessSupported && terminalTabsFocus"
+    },
+    {
+        "key": "delete",
+        "command": "-workbench.action.terminal.killActiveTab",
+        "when": "terminalHasBeenCreated && terminalTabsFocus || terminalIsOpen && terminalTabsFocus || terminalProcessSupported && terminalTabsFocus"
+    },
+    {
+        "key": "ctrl+shift+oem_2",
+        "command": "workbench.action.terminal.kill"
+    },
+    {
+        "key": "ctrl+oem_2",
+        "command": "workbench.view.extension.dbcodePanelContainer"
+    },
+    {
+        "key": "ctrl+n",
+        "command": "-workbench.action.chat.newChat",
+        "when": "chatIsEnabled && inChat && chatLocation == 'panel'"
+    },
+    {
+        "key": "ctrl+n",
+        "command": "-workbench.action.openChat",
+        "when": "chatIsEnabled && inChat && inChatEditor"
+    },
+    {
+        "key": "ctrl+n",
+        "command": "-chatEditor.action.undoHunk",
+        "when": "chatEdits.cursorInChangeRange && chatEdits.hasEditorModifications && editorFocus && !chatEdits.isCurrentlyBeingModified || chatEdits.cursorInChangeRange && chatEdits.hasEditorModifications && notebookCellListFocused && !chatEdits.isCurrentlyBeingModified"
+    },
+    // DBCode: correr a query com F5 (como no SSMS) em vez de Ctrl+Enter; fora dos editores SQL o F5
+    // continua a ser o do debug
+    {
+        "key": "f5",
+        "command": "dbcode.editor.execute",
+        "when": "editorTextFocus && !notebookCellListFocused && (editorLangId == sql || resourceFilename =~ /.sql$/) && resourceScheme != dbcode"
+    },
+    {
+        "key": "ctrl+enter",
+        "command": "-dbcode.editor.execute",
+        "when": "editorTextFocus && !notebookCellListFocused && (editorLangId == sql || resourceFilename =~ /.sql$/) && resourceScheme != dbcode"
+    },
+    // DBCode Quick Open em Ctrl+Alt+O: o Ctrl+Win+O do Windows abre o teclado no ecrã
+    {
+        "key": "ctrl+alt+o",
+        "command": "dbcode.connections.quickOpen"
+    },
+    {
+        "key": "ctrl+win+o",
+        "command": "-dbcode.connections.quickOpen"
+    },
+    // DBCode: nova query com Ctrl+N
+    {
+        "key": "ctrl+n",
+        "command": "dbcode.connections.sqlFile"
+    },
+    // SQL: formatar com Alt+N
+    {
+        "key": "alt+n",
+        "command": "editor.action.formatDocument",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == sql"
+    },
+    {
+        "key": "ctrl+shift+j",
+        "command": "-workbench.action.search.toggleQueryDetails",
+        "when": "inSearchEditor || searchViewletFocus"
+    },
+    {
+        "key": "ctrl+shift+j",
+        "command": "workbench.view.extension.dbcodeActivitybarContainer"
+    },
+    {
+        "key": "ctrl+shift+d",
+        "command": "-workbench.view.debug",
+        "when": "viewContainer.workbench.view.debug.enabled"
+    },
+    {
+        "key": "ctrl+shift+d",
+        "command": "workbench.view.extension.bruno"
     }
 ]

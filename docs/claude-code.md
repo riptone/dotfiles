@@ -5,13 +5,14 @@ Claude Code is the primary agent. opencode stays installed as a second one
 
 ## Install
 
-Nothing to install: Claude runs from the VS Code extension
-(`anthropic.claude-code`, in `config/vscode/profiles.json`), which bundles its
-own copy and updates with the extension. It reads the same
-`~/.claude/settings.json` and `~/.claude.json` a CLI would.
+Claude Code runs from the VS Code extension (`anthropic.claude-code`, in
+`config/vscode/profiles.json`), which bundles its own copy and updates with the
+extension. It reads the same `~/.claude/settings.json` and `~/.claude.json` a
+CLI would.
 
-Want `claude` in a terminal too? Add `claude-code = "latest"` to `[tools]` in
-`config/mise/config.toml`.
+A terminal `claude` is optional and not managed by this repo. If you want mise
+to own one, add `claude-code = "latest"` to `[tools]` in
+`config/mise/config.toml`; otherwise install it with Claude's own installer.
 
 ## What's managed
 
@@ -19,6 +20,8 @@ Want `claude` in a terminal too? Add `claude-code = "latest"` to `[tools]` in
 home/.claude/settings.json  ->  ~/.claude/settings.json   (a symlink)
 home/.claude/AGENTS.md      ->  ~/.claude/AGENTS.md       (global instructions)
                                 ~/.claude/CLAUDE.md       (same file, so is ~/.codex/AGENTS.md)
+config/ponytail/config.json ->  ~/.config/ponytail/config.json            (macOS)
+                                ~/AppData/Roaming/ponytail/config.json    (Windows)
 ```
 
 mise links files, not the directory, so `~/.claude` stays a real
@@ -27,8 +30,12 @@ auto-memory), and none of that comes near this repo.
 
 `AGENTS.md` holds the rules for every project (run the gate, never push
 without asking, no paid services, Bun and Biome). A project's own file wins
-where they disagree. `CLAUDE.md` is a second `[dotfiles]` entry for the same file, and opencode loads it
-through `instructions`.
+where they disagree. `CLAUDE.md` is a second `[dotfiles]` entry for the same
+file, and opencode loads it through `instructions`.
+
+`config/ponytail/config.json` is the shared ponytail config, read by both the
+Claude and opencode plugins. It is a file symlink, so editing it in the repo is
+all either agent needs.
 
 Other user-authored config can be added the same way, with
 a `[dotfiles]` entry in `mise.toml` (for `~/.claude/agents/...` or `output-styles/`).
@@ -43,8 +50,9 @@ revert one-off permissions you don't.
 
 ### What's in `settings.json`
 
-- **Model and effort:** `opus[1m]`, effort `high`, output style `Concise`,
-  rolling update channel.
+- **Model and effort:** `sonnet`, effort `high`; `claude-opus-5-5` stays at
+  `medium` through `modelSettings`. Output style `Concise`, rolling update
+  channel, dark theme.
 - **`env`:** larger Bash and MCP output caps, plus the non-interactive set
   (`GIT_EDITOR=true`, `GIT_PAGER`/`PAGER=cat`, `GIT_TERMINAL_PROMPT=0`,
   `GCM_INTERACTIVE=never`, `npm_config_yes`, `PIP_NO_INPUT`), so a command
@@ -55,7 +63,23 @@ revert one-off permissions you don't.
   pre-allowed, along with every dbhub tool (`mcp__dbhub`).
   `~/.doti/**` and the age key (`~/.config/age/key.txt`) are denied to `Read` and `Edit`,
   because that's where the decrypted secrets and their key live.
-- **Plugins:** [caveman](https://github.com/JuliusBrussee/caveman).
+- **Plugins:** ponytail only.
+
+### Plugins
+
+Ponytail is the only plugin, installed at user scope as
+`ponytail@ponytail` from its own marketplace. `settings.json` declares both
+the marketplace and the enabled plugin. To install or refresh it:
+
+```sh
+claude plugin marketplace add https://github.com/DietrichGebert/ponytail.git
+claude plugin install ponytail@ponytail -s user
+```
+
+Its hooks read `config/ponytail/config.json`, the same file opencode uses, so
+`hideStatus` and `defaultMode` apply to both agents. The plugin's task-board
+hooks need Claude Code 2.1.290+; update the CLI if you want those. opencode has
+its own pinned copy.
 
 ## MCP servers: merged into `~/.claude.json`
 
@@ -90,15 +114,18 @@ To add another MCP server, add it to `home/.claude/mcp.json` and its npm package
 
 Third-party skills are tracked as a **list**, not as files:
 `home/.agents/skills.json` maps each GitHub repo to the skills taken
-from it. the `bootstrap` task installs them with
+from it. The `bootstrap` task installs them with
 `pnpm dlx skills add <repo> -g -a claude-code opencode -s <names>` into `~/.agents/skills` with links from `~/.claude/skills`.
 
 | To... | Do |
 |---|---|
 | Add a skill | `pnpm dlx skills add <repo> -g -s <name>`, then `save` (it rewrites the list from `~/.agents/.skill-lock.json`) |
 | Remove one | `pnpm dlx skills remove -g <name>`, then `save`; other machines keep it until removed there too |
-| Update all | `up` (re-runs the `bootstrap` task, which re-adds every skill) |
 
-The caveman skills come from its Claude plugin (`enabledPlugins` in
-`settings.json`), so they're not in the list. A skill that some other tool
-drops into `~/.agents/skills` without the lock file isn't tracked.
+`up` only installs skills that are missing from `~/.agents/.skill-lock.json`;
+it does not refresh existing ones. To update, remove the skill, add it again,
+then `save`.
+
+The ponytail skills come from the ponytail plugin (Claude and opencode), so
+they're not in the list. A skill that some other tool drops into
+`~/.agents/skills` without the lock file isn't tracked.

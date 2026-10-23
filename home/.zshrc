@@ -31,7 +31,7 @@ command -v mise &>/dev/null && eval "$(mise activate zsh)"
 
 # zoxide
 if command -v zoxide &>/dev/null; then
-  # ponytail: substring excludes — keep noise out of the db, no matching magic
+  # substring excludes — keep noise out of the db, no matching magic
   export _ZO_EXCLUDE_DIRS="/tmp:/var:/proc:/sys:/node_modules:/.git"
   export _ZO_MAXAGE=365   # drop entries unused for a year
   eval "$(zoxide init zsh)"

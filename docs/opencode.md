@@ -20,9 +20,11 @@ upgrades it on every OS (`up`).
 | `biome.jsonc` | Biome rules for the formatter |
 | `shell-strategy.md` | Notes on non-interactive shell flags (not referenced from `opencode.jsonc`) |
 
-Each file is a symlink; `~/.config/opencode` itself is a real directory. So
-what opencode writes there itself (a `package.json` and `node_modules` for
-the plugin SDK) stays out of this repo.
+On macOS each file is a symlink; `~/.config/opencode` itself is a real
+directory. On Windows mise copies these files instead (directory
+`symlink-each` falls back to copies), so re-run `mise dot apply` after editing
+the repo. Either way, what opencode writes there itself (a `package.json` and
+`node_modules` for the plugin SDK) stays out of this repo.
 
 Plugins in use: oh-my-opencode-slim (orchestration), `@tarquinen/opencode-dcp`
 (context pruning), `opencode-antigravity-auth`, `opencode-claude-auth`,
@@ -38,7 +40,8 @@ pinned in `opencode.jsonc`.
   `~/.cache/opencode/packages/`. A second global copy is dead weight.
 - **`npm:` tools are for MCP servers only,** and each one must be run by name from
   an agent config. Today that's just `dbhub`, which is off by default here
-  (`"enabled": false`) because it registers two tools per database.
+  (`"disabled": true` in `mcp.servers.dbhub`) because it registers two tools
+  per database.
 
 ## Windows performance
 

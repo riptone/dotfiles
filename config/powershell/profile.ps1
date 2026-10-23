@@ -2,6 +2,9 @@
 # Mirrors zsh/.zprofile + zsh/.zshrc + aliases on macOS/Linux, so a Windows
 # machine gets the same prompt, tools, and shortcuts.
 
+# mise's PowerShell chpwd hook needs PS7; silence the warning on Windows 5.1.
+$env:MISE_PWSH_CHPWD_WARNING = '0'
+
 # User-level binaries, same as ~/.local/bin in .zprofile.
 # Compare whole entries: a PATH entry pointing at a file inside the folder
 # (claude.exe) would make a wildcard match skip the folder itself.

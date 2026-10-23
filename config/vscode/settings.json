@@ -21,7 +21,6 @@
   "telemetry.telemetryLevel": "off",
   "agents.voice.handsFree": false,
   "workbench.browser.searchEngine": "duckduckgo",
-  "mssql.openQueryResultsInTabByDefaultDoNotShowPrompt": true,
   "settingsSync.ignoredExtensions": [
     
   ],

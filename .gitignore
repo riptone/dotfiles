@@ -5,8 +5,7 @@
 # are the backstop for the day one is copied here by hand.
 home/.doti/*
 !home/.doti/*.age
-dbhub.toml
-mssql-envs.json
+cleardbhub.toml
 insales-accounts.json
 .gitconfig.local
 key.txt

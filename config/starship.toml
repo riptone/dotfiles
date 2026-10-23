@@ -15,7 +15,6 @@ $rust\
 $golang\
 $java\
 $cmd_duration\
-$fill\
 $time\
 $line_break\
 $character"""
@@ -52,9 +51,6 @@ style = "bold green"
 min_time = 2_000
 style = "bold yellow"
 format = "took [$duration]($style) "
-
-[fill]
-symbol = " "
 
 [time]
 disabled = false

@@ -1,9 +1,9 @@
 {
-  // Quota / usage readout for Copilot, Anthropic, Antigravity, OpenAI, z.ai.
-  // Loaded by @slkiser/opencode-quota; read next to the OpenCode config.
-  "enabledProviders": "auto",
-  "tuiSidebarPanel": { "enabled": true },
-  "enableToast": false,
-  "tuiCompactStatus": { "enabled": false },
-  "maintainerAnnouncements": { "enabled": false }
+	// Quota / usage readout for Copilot, Anthropic, Antigravity, OpenAI, z.ai.
+	// Loaded by @slkiser/opencode-quota; read next to the OpenCode config.
+	"enabledProviders": "auto",
+	"tuiSidebarPanel": { "enabled": true },
+	"enableToast": false,
+	"tuiCompactStatus": { "enabled": false },
+	"maintainerAnnouncements": { "enabled": false }
 }

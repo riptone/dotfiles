@@ -16,11 +16,12 @@ config.default_cursor_style = "BlinkingBar"
 config.hide_mouse_cursor_when_typing = true
 config.window_background_opacity = mac and 0.95 or 1.0
 config.macos_window_background_blur = 8
-config.window_decorations = mac and "INTEGRATED_BUTTONS|RESIZE" or "RESIZE"
+config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
+config.integrated_title_button_color = "#ff9e64"
 config.window_padding = { left = 8, right = 8, top = 8, bottom = 8 }
 config.window_close_confirmation = "NeverPrompt"
 config.use_fancy_tab_bar = false
-config.hide_tab_bar_if_only_one_tab = true
+config.hide_tab_bar_if_only_one_tab = false
 
 -- PT-PT layout: option+2 must type @ on macOS, not an escape sequence.
 config.send_composed_key_when_left_alt_is_pressed = true
@@ -28,6 +29,9 @@ config.send_composed_key_when_right_alt_is_pressed = true
 
 if windows then
   config.default_prog = { "pwsh.exe", "-NoLogo" }
+  -- Intel Iris Xe flickers a line at the window edge with the OpenGL frontend.
+  config.front_end = "WebGpu"
+  config.webgpu_power_preference = "HighPerformance"
 end
 
 config.leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 }
@@ -50,6 +54,14 @@ config.keys = {
   { key = "n", mods = "LEADER", action = act.ActivateTabRelative(1) },
   { key = "p", mods = "LEADER", action = act.ActivateTabRelative(-1) },
   { key = "n", mods = "CTRL", action = act.SpawnWindow },
+
+  { key = "t", mods = "LEADER", action = act.SpawnTab("CurrentPaneDomain") },
+  { key = "w", mods = "LEADER", action = act.CloseCurrentTab({ confirm = false }) },
 }
+
+for i = 1, 8 do
+  table.insert(config.keys, { key = tostring(i), mods = "LEADER", action = act.ActivateTab(i - 1) })
+end
+table.insert(config.keys, { key = "9", mods = "LEADER", action = act.ActivateTab(-1) })
 
 return config

@@ -68,7 +68,8 @@ the shell prompt like a normal text editor, instead of zsh's default of just
 moving the cursor.
 
 **Misc aliases** — `myip` (public IP via ifconfig.me), `path` (one `$PATH`
-entry per line), `reload` (`exec zsh`, reloads the shell in place).
+entry per line), `reload` (`exec zsh` on macOS, re-sources `$PROFILE` on
+Windows).
 
 **Drift check** — `mise dot status` lists every managed file that differs
 from the repo, `mise dot diff` shows how.
