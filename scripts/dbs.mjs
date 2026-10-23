@@ -1,4 +1,5 @@
-// Generates ~/.doti/dbhub.toml from ~/.doti/connections.csv (the one secret).
+// Generates ~/.doti/dbhub.toml and ~/.doti/dadbod.lua from
+// ~/.doti/connections.csv (the one secret).
 // Ported from insales' assets/scripts/dev/dbhub.mjs, minus the insales-only
 // parts (SQLite folder scan, CSV bootstrap, MCP launcher).
 //
@@ -96,8 +97,23 @@ const OWN_KEYS =
 	/^\s*(id|dsn|type|host|port|database|user|password|path|description)\s*=/;
 const isSqliteRow = (r) => r.type.toLowerCase() === "sqlite";
 
-// Returns { sources, sqlite, problems, changedDsn, changed }.
-export function generate(csvPath, tomlPath) {
+const luaString = (s) =>
+	`"${[...s]
+		.map((c) => {
+			const code = c.codePointAt(0);
+			if (c === "\\") return "\\\\";
+			if (c === '"') return '\\"';
+			if (c === "\n") return "\\n";
+			if (c === "\r") return "\\r";
+			if (c === "\t") return "\\t";
+			return code < 32 || code === 127
+				? `\\${String(code).padStart(3, "0")}`
+				: c;
+		})
+		.join("")}"`;
+
+// Returns { sources, sqlite, problems, changedDsn, changed, dadbodChanged }.
+export function generate(csvPath, tomlPath, dadbodPath) {
 	const rows = parseCsv(fs.readFileSync(csvPath, "utf8"));
 	const tomlText = fs.existsSync(tomlPath)
 		? fs.readFileSync(tomlPath, "utf8")
@@ -174,6 +190,8 @@ export function generate(csvPath, tomlPath) {
 		isSqliteRow(r)
 			? `${sqlitePrefix}${r.file}`
 			: `${r.type}://${enc(r.user)}:${enc(r.password)}@${r.host}${r.port ? `:${r.port}` : ""}/${enc(r.database)}${r.options ? `?${r.options}` : ""}`;
+	const dadbodDsnOf = (r) =>
+		isSqliteRow(r) ? `sqlite:${r.file.replace(/\\/g, "/")}` : dsnOf(r);
 	const describe = (r) =>
 		isSqliteRow(r)
 			? `Cópia local do tablet — assets/server/db/${path.basename(r.file)}`
@@ -196,6 +214,27 @@ export function generate(csvPath, tomlPath) {
 			),
 		];
 	});
+
+	const dadbod = dadbodPath
+		? [
+				"-- Generated from ~/.doti/connections.csv by scripts/dbs.mjs; do not edit.",
+				"return {",
+				...valid.map(
+					(r) =>
+						`  { name = ${luaString(r.name)}, url = ${luaString(dadbodDsnOf(r))} },`,
+				),
+				"}",
+				"",
+			].join("\n")
+		: "";
+	const dadbodChanged =
+		Boolean(dadbodPath) &&
+		dadbod !==
+			(fs.existsSync(dadbodPath) ? fs.readFileSync(dadbodPath, "utf8") : "");
+	if (dadbodChanged) {
+		fs.writeFileSync(dadbodPath, dadbod, { mode: 0o600 });
+		fs.chmodSync(dadbodPath, 0o600);
+	}
 
 	const output = blocks
 		.filter((b) => b.header !== "sources" && b.header !== "tools")
@@ -240,6 +279,7 @@ export function generate(csvPath, tomlPath) {
 	const after = new Set(valid.map((r) => r.name));
 	return {
 		changed,
+		dadbodChanged,
 		added: [...after].filter((n) => !before.has(n)),
 		removed: [...before].filter((n) => !after.has(n)),
 		changedDsn,

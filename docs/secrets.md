@@ -28,7 +28,7 @@ only asks for the passphrase when that file is missing.
 
 | File | Lands at | Used by |
 |---|---|---|
-| `home/.doti/connections.csv.age` | `~/.doti/connections.csv`, and from it the generated `~/.doti/dbhub.toml` (never edit that one) | The dbhub MCP server in Claude and opencode; DBCode imports the CSV |
+| `home/.doti/connections.csv.age` | `~/.doti/connections.csv`, and from it the generated `~/.doti/dbhub.toml` and `~/.doti/dadbod.lua` (never edit them) | The dbhub MCP server in Claude and opencode; vim-dadbod in Neovim; DBCode imports the CSV |
 | `config/vscode/profiles/Work/settings.json.age` | `config/vscode/profiles/Work/settings.json` (git-ignored) | The Work VS Code profile |
 
 They're written as real files at 0600. (`~/.doti` is a historical name; the
@@ -37,7 +37,7 @@ insales project reads from it.) Claude is denied `Read`/`Edit` on
 
 ## Daily use
 
-Edit the decrypted file (`~/.doti/connections.csv`, then `node scripts/dots.mjs dbhub` to regenerate the toml, or the Work VS Code settings
+Edit the decrypted file (`~/.doti/connections.csv`, then `node scripts/dots.mjs dbs` to regenerate the toml and Lua table, or the Work VS Code settings
 in VS Code), then `save`: it re-encrypts every secret whose decrypted copy
 changed, then commits and pushes.
 

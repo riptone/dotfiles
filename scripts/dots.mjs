@@ -6,7 +6,7 @@
 //   vscode        register profiles in VS Code's storage.json, install missing extensions (--prune: remove the rest)
 //   skills        install home/.agents/skills.json for Claude Code and opencode
 //   secrets       decrypt every *.age in the repo next to itself (home/.doti is linked by hand, see below) (asks for the key passphrase once)
-//   dbhub         generate ~/.doti/dbhub.toml from ~/.doti/connections.csv (`secrets` does it too)
+//   dbs           generate ~/.doti/dbhub.toml and ~/.doti/dadbod.lua from ~/.doti/connections.csv (`secrets` does it too)
 //   reencrypt     re-encrypt secrets whose decrypted copy changed on this machine
 //   save-lists    reencrypt, then rewrite config/vscode/profiles.json and home/.agents/skills.json
 import { execFileSync, spawnSync } from "node:child_process";
@@ -14,7 +14,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { generate } from "./dbhub.mjs";
+import { generate } from "./dbs.mjs";
 
 const repo = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const home = os.homedir();
@@ -227,17 +227,26 @@ const commands = {
 			fs.chmodSync(target, 0o600);
 		}
 		console.log("secrets: decrypted");
-		commands.dbhub();
+		commands.dbs();
 	},
 
-	// dbhub.toml is derived from connections.csv, the one secret; never edit it.
-	dbhub() {
+	// dbhub.toml and dadbod.lua are derived from connections.csv, the one secret;
+	// never edit them.
+	dbs() {
 		const dir = path.join(home, ".doti");
 		const csv = path.join(dir, "connections.csv");
 		if (!fs.existsSync(csv)) return;
-		const r = generate(csv, path.join(dir, "dbhub.toml"));
+		const r = generate(
+			csv,
+			path.join(dir, "dbhub.toml"),
+			path.join(dir, "dadbod.lua"),
+		);
+		const changed = [
+			r.changed && "dbhub.toml",
+			r.dadbodChanged && "dadbod.lua",
+		].filter(Boolean);
 		console.log(
-			`dbhub: ${r.count} sources${r.changed ? ", dbhub.toml regenerated" : ", no change"}`,
+			`dbs: ${r.count} sources${changed.length ? `, ${changed.join(" and ")} regenerated` : ", no change"}`,
 		);
 		if (r.added.length) console.log(`  + ${r.added.join(", ")}`);
 		if (r.removed.length) console.log(`  - ${r.removed.join(", ")}`);

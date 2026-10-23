@@ -66,9 +66,13 @@ terminal), Bruno (GUI client), GitHub PRs (use `gh`).
 ## Database connections
 
 `:DBUIAddConnection` stores URLs under `stdpath("data")/dadbod_ui`, outside
-this repo. That keeps credentials out of git; reuse the same DSNs as
-`~/.doti/dbhub.toml`. To auto-load them, set `vim.g.dbs` from the environment
-in `lua/plugins/` — do not commit the URLs.
+this repo. The regular connections come from `~/.doti/dadbod.lua`, generated
+from the same `connections.csv` as `~/.doti/dbhub.toml`; `lua/plugins/dadbod.lua`
+loads it into `vim.g.dbs` when the file exists. Keep the generated file out of
+git — do not commit the URLs.
+
+Dadbod shells out to `sqlcmd` for SQL Server and `sqlite3` for SQLite, so those
+must be on `PATH`.
 
 ## Neovim version
 
