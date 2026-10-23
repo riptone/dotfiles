@@ -66,6 +66,33 @@ config.keys = {
   { key = "p", mods = "LEADER", action = act.ActivateTabRelative(-1) },
   { key = "n", mods = "CTRL", action = act.SpawnWindow },
 
+  -- WezTerm's mouse selection is invisible to PSReadLine, so copy here. At a shell prompt
+  -- with nothing selected, send nothing (no ^C echo); elsewhere pass ^C through.
+  {
+    key = "c",
+    mods = "CTRL",
+    action = wezterm.action_callback(function(window, pane)
+      if window:get_selection_text_for_pane(pane) ~= "" then
+        window:perform_action(act.CopyTo("ClipboardAndPrimarySelection"), pane)
+      elseif not pane:get_foreground_process_name():find("pwsh") then
+        window:perform_action(act.SendKey({ key = "c", mods = "CTRL" }), pane)
+      end
+    end),
+  },
+
+  -- Ctrl+C copies a selection; with nothing selected it still reaches the shell as ^C
+  {
+    key = "c",
+    mods = "CTRL",
+    action = wezterm.action_callback(function(window, pane)
+      if window:get_selection_text_for_pane(pane) ~= "" then
+        window:perform_action(act.CopyTo("ClipboardAndPrimarySelection"), pane)
+      else
+        window:perform_action(act.SendKey({ key = "c", mods = "CTRL" }), pane)
+      end
+    end),
+  },
+
   { key = "t", mods = "LEADER", action = act.SpawnTab("CurrentPaneDomain") },
   { key = "w", mods = "LEADER", action = act.CloseCurrentTab({ confirm = false }) },
 }

@@ -54,6 +54,8 @@ if (Get-Module -ListAvailable -Name PSReadLine) {
     try { Set-PSReadLineOption -PredictionSource History } catch { }  # PSReadLine 2.1.0+
     try { Set-PSReadLineOption -PredictionViewStyle ListView } catch { }  # PSReadLine 2.2+
     Set-PSReadLineKeyHandler -Key Tab         -Function MenuComplete
+    Set-PSReadLineKeyHandler -Key Ctrl+v      -Function Paste  # Emacs mode drops the Windows Ctrl+V paste
+    Set-PSReadLineKeyHandler -Key Ctrl+c      -Function CopyOrCancelLine  # Emacs mode sends ^C (newline) when nothing is selected
     Set-PSReadLineKeyHandler -Key UpArrow     -Function HistorySearchBackward
     Set-PSReadLineKeyHandler -Key DownArrow   -Function HistorySearchForward
     Set-PSReadLineKeyHandler -Key Ctrl+z              -Function Undo
@@ -70,6 +72,8 @@ if (Get-Module -ListAvailable -Name PSReadLine) {
 if (Get-Command opencode -ErrorAction SilentlyContinue) {
     Set-Alias oc opencode
 }
+# Detached launch: running code from the WezTerm console crashes it (see wezterm log)
+function code { Start-Process code -ArgumentList $args }
 
 # --- git shortcuts (parity with aliases.zsh) ---
 # NOTE: gc / gp / gl are intentionally NOT defined — they're core PowerShell
