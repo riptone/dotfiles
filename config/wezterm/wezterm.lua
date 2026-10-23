@@ -12,12 +12,16 @@ config.font = wezterm.font("JetBrainsMono Nerd Font")
 config.font_size = mac and 14 or 11
 config.initial_cols = 117
 config.initial_rows = 27
-config.harfbuzz_features = { "calt", "liga", "dlig", "ss01", "ss02", "ss03", "ss04", "ss05", "ss06", "ss07", "ss08" }
+config.harfbuzz_features = { "calt", "liga" }
+config.animation_fps = 1
+config.check_for_updates = false
+config.scrollback_lines = 2000
+config.automatically_reload_config = false
 
 config.default_cursor_style = "SteadyBar"
 config.hide_mouse_cursor_when_typing = true
-config.window_background_opacity = mac and 0.95 or 1.0
-config.macos_window_background_blur = 8
+config.window_background_opacity = 1.0
+config.macos_window_background_blur = 0
 config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 config.integrated_title_button_color = "#ff9e64"
 config.window_padding = { left = 8, right = 8, top = 8, bottom = 8 }

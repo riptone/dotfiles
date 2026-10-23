@@ -57,7 +57,7 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "sonnet",
+  "model": "haiku",
   "enabledPlugins": {
     "ponytail@ponytail": true
   },
@@ -71,12 +71,18 @@
   },
   "outputStyle": "Concise",
   "effortLevel": "high",
-  "autoUpdatesChannel": "latest",
-  "theme": "dark",
-  "switchModelsOnFlag": false,
   "modelSettings": {
     "claude-opus-5-5": {
       "effortLevel": "medium"
+    },
+    "claude-sonnet-5-5": {
+      "effortLevel": "medium"
+    },
+    "claude-haiku-5-5": {
+      "effortLevel": "low"
     }
-  }
+  },
+  "autoUpdatesChannel": "latest",
+  "theme": "dark",
+  "switchModelsOnFlag": false
 }
