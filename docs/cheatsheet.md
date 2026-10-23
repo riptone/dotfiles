@@ -39,7 +39,7 @@ opens an interactive picker when more than one directory matches well.
 
 **Listing** — `ll` (long, all), `la` (all), `l1` (one per line).
 
-**starship prompt** — config lives at `~/.config/starship.toml` (`config/starship.toml`). Colors match the Tokyo Night theme used everywhere else
+**starship prompt** — config lives at `~/.config/starship.toml` (`config/starship.toml`). Colors match the Pierre theme used everywhere else
 (ghostty, wezterm, opencode TUI). Just edit the file — starship
 re-reads it on every prompt, no reload needed.
 

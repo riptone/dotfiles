@@ -16,7 +16,7 @@ upgrades it on every OS (`up`).
 | `dcp.jsonc` | Settings for the dynamic context pruning plugin |
 | `opencode-quota/quota-toast.jsonc` | Settings for the quota readout plugin |
 | `agents/code-reviewer.md` | A read-only review subagent |
-| `cli.json` | The TUI: theme (tokyonight), diffs, session behaviour |
+| `cli.json` | The TUI: theme (`system`, follows the terminal), diffs, session behaviour |
 | `biome.jsonc` | Biome rules for the formatter |
 | `shell-strategy.md` | Notes on non-interactive shell flags (not referenced from `opencode.jsonc`) |
 

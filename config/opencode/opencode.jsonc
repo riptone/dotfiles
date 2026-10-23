@@ -182,6 +182,12 @@
 	],
 	"mcp": {
 		"servers": {
+			// Remote docs lookup. Same entry as home/.claude/mcp.json.
+			"context7": {
+				"type": "remote",
+				"url": "https://mcp.context7.com/mcp",
+				"oauth": false
+			},
 			// One server for every database. The sources live in ~/.doti/dbhub.toml,
 			// which `mise run secrets` decrypts from the repo (plaintext never is committed).
 			// dbhub expands the ~ itself, so this entry is the same on every OS.

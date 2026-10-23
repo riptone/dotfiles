@@ -13,7 +13,7 @@ installed. Nothing here is written to `$HOME` except through those two files.
 mise.toml                  [dotfiles] links + tasks (bootstrap, secrets, up, save)
 config/mise/config.toml    [tools], [bootstrap.*] packages/repos/macOS defaults, [env]
 home/                      links into ~     (.zshrc, .zprofile, .gitconfig, .claude/, .ssh/config)
-config/                    links into ~/.config (opencode, starship, git, wezterm, ghostty, vscode, powershell)
+config/                    links into ~/.config (opencode, nvim, starship, git, wezterm, ghostty, vscode, powershell)
 *.age                      secrets, encrypted, next to where they land (home/.doti/, config/vscode/profiles/Work/)
 config/vscode/profiles.json  VS Code profiles + extensions
 home/.agents/skills.json   agent skills; home/.claude/mcp.json is Claude's MCP servers

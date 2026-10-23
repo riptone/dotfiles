@@ -1,4 +1,4 @@
--- One config for macOS and Windows. Mirrors ghostty/config: Tokyo Night,
+-- One config for macOS and Windows. Mirrors ghostty/config: Pierre dark,
 -- JetBrains Mono, ctrl+a leader with vim-direction splits.
 local wezterm = require("wezterm")
 local act = wezterm.action
@@ -7,7 +7,22 @@ local config = wezterm.config_builder()
 local mac = wezterm.target_triple:find("apple") ~= nil
 local windows = wezterm.target_triple:find("windows") ~= nil
 
-config.color_scheme = "Tokyo Night"
+config.colors = {
+  background = "#171717",
+  foreground = "#a3a3a3",
+  cursor_bg = "#009fff",
+  cursor_fg = "#171717",
+  selection_bg = "#19283c",
+  selection_fg = "#fafafa",
+  ansi = {
+    "#171717", "#ff2e3f", "#0dbe4e", "#ffca00",
+    "#009fff", "#e130ac", "#08c0ef", "#bcbcbc",
+  },
+  brights = {
+    "#171717", "#ff2e3f", "#86c427", "#ffca00",
+    "#009fff", "#e130ac", "#08c0ef", "#bcbcbc",
+  },
+}
 config.font = wezterm.font("JetBrainsMono Nerd Font")
 config.font_size = mac and 14 or 11
 config.initial_cols = 117

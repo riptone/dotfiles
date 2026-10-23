@@ -31,7 +31,8 @@ const parseBlocks = (text) => {
 };
 
 const value = (raw) => {
-	if (raw.startsWith('"')) return JSON.parse(raw.match(/^"(?:[^"\\]|\\.)*"/)[0]);
+	if (raw.startsWith('"'))
+		return JSON.parse(raw.match(/^"(?:[^"\\]|\\.)*"/)[0]);
 	if (raw.startsWith("'")) return raw.slice(1, raw.indexOf("'", 1));
 	return raw.replace(/\s*#.*$/, "").trim();
 };
@@ -44,7 +45,9 @@ const field = (block, key) => {
 const withField = (block, key, v) => ({
 	...block,
 	lines: block.lines.map((l) =>
-		new RegExp(`^\\s*${key}\\s*=`).test(l) ? `${key} = ${JSON.stringify(v)}` : l,
+		new RegExp(`^\\s*${key}\\s*=`).test(l)
+			? `${key} = ${JSON.stringify(v)}`
+			: l,
 	),
 });
 
@@ -162,8 +165,9 @@ export function generate(csvPath, tomlPath) {
 	const sqliteSource = sources.find(isSqlite);
 	const sqliteModel = modelOf(sqliteSource);
 	const sqlitePrefix =
-		field(sqliteSource ?? { lines: [] }, "dsn")?.match(/^sqlite:\/\/\/?/i)?.[0] ||
-		"sqlite:///";
+		field(sqliteSource ?? { lines: [] }, "dsn")?.match(
+			/^sqlite:\/\/\/?/i,
+		)?.[0] || "sqlite:///";
 
 	const enc = encodeURIComponent;
 	const dsnOf = (r) =>
@@ -211,7 +215,15 @@ export function generate(csvPath, tomlPath) {
 		try {
 			const u = new URL(dsn);
 			const d = decodeURIComponent;
-			return [u.protocol, u.hostname, u.port, d(u.username), d(u.password), d(u.pathname), u.search].join(" ");
+			return [
+				u.protocol,
+				u.hostname,
+				u.port,
+				d(u.username),
+				d(u.password),
+				d(u.pathname),
+				u.search,
+			].join(" ");
 		} catch {
 			return dsn;
 		}

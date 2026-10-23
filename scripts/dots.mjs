@@ -236,10 +236,13 @@ const commands = {
 		const csv = path.join(dir, "connections.csv");
 		if (!fs.existsSync(csv)) return;
 		const r = generate(csv, path.join(dir, "dbhub.toml"));
-		console.log(`dbhub: ${r.count} sources${r.changed ? ", dbhub.toml regenerated" : ", no change"}`);
+		console.log(
+			`dbhub: ${r.count} sources${r.changed ? ", dbhub.toml regenerated" : ", no change"}`,
+		);
 		if (r.added.length) console.log(`  + ${r.added.join(", ")}`);
 		if (r.removed.length) console.log(`  - ${r.removed.join(", ")}`);
-		if (r.changedDsn.length) console.log(`  ~ dsn changed: ${r.changedDsn.join(", ")}`);
+		if (r.changedDsn.length)
+			console.log(`  ~ dsn changed: ${r.changedDsn.join(", ")}`);
 		for (const p of r.problems) console.log(`  ! skipped, ${p}`);
 	},
 

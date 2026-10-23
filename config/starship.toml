@@ -1,8 +1,8 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
-# Two-line prompt (context line, then a blank prompt line) with colors matching
-# the Tokyo Night theme already used by ghostty, the opencode TUI, and Windows
-# Terminal — same accent hexes as that theme, not invented here.
+# Two-line prompt (context line, then a blank prompt line). Colors are the
+# Pierre dark palette, matching VS Code, nvim, Ghostty and (via `theme =
+# "system"`) opencode.
 add_newline = true
 
 format = """
@@ -19,15 +19,15 @@ $time\
 $line_break\
 $character"""
 
-palette = "tokyonight"
+palette = "pierre"
 
-[palettes.tokyonight]
-blue    = "#7aa2f7"
-green   = "#9ece6a"
-purple  = "#bb9af7"
-yellow  = "#e0af68"
-red     = "#f7768e"
-comment = "#565f89"
+[palettes.pierre]
+blue    = "#009fff"
+green   = "#0dbe4e"
+purple  = "#e130ac"
+yellow  = "#ffca00"
+red     = "#ff2e3f"
+comment = "#737373"
 
 [directory]
 style = "bold blue"

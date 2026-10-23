@@ -1,4 +1,4 @@
-theme = "tokyonight"
+theme = "pierre"
 
 font-family = "JetBrainsMono Nerd Font"
 font-size = 14
@@ -16,15 +16,16 @@ confirm-close-surface = false
 clipboard-read = "allow"
 clipboard-write = "allow"
 
-background-opacity = 0.95
-background-blur-radius = 8
+background-opacity = 1
 
 macos-option-as-alt = true
 
 # PT-PT: override Option+2 to produce @ (instead of escape sequence)
 keybind = opt+2=text:@
 
-macos-titlebar-style = "tabs"
+# Native titlebar: the custom "tabs" titlebar draws an invisible drag region
+# over the right-hand tabs on macOS 26+.
+macos-titlebar-style = "native"
 
 shell-integration = "zsh"
 

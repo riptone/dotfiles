@@ -5,7 +5,9 @@
 	// Explicit empty arrays to prevent undefined/string merge bugs
 	// in oh-my-opencode-slim@2.2.8 health check (line 40138-40151).
 	"disabled_tools": [],
-	"disabled_mcps": [],
+	// The plugin injects these two at runtime even when they are absent from
+	// opencode.jsonc. Declared there instead, so config stays the one source.
+	"disabled_mcps": ["context7", "gh_grep"],
 	// OMO 3.0.5 bundles 11 skills that overlap with ponytail or are rarely
 	// used. Each one costs its name+description in every prompt.
 	"disabled_skills": [
@@ -58,14 +60,12 @@
 				"mcps": []
 			},
 			// ── Librarian ─────────────────────────────────────────────
-			// External docs lookup. Uses built-in websearch (exa) + webfetch.
-			// Only list MCP servers that are actually configured: context7 and fetch
-			// were dropped, so this stays empty.
+			// External docs lookup. context7 is declared in opencode.jsonc.
 			"librarian": {
 				"model": "opencode/big-pickle",
 				"variant": "low",
 				"skills": [],
-				"mcps": []
+				"mcps": ["context7"]
 			},
 			// ── Designer ──────────────────────────────────────────────
 			// UI/UX — creative work benefits from higher temperature.

@@ -25,9 +25,12 @@
 "~/.config/starship.toml" = "config/starship.toml"
 "~/.config/git" = { source = "config/git", mode = "symlink-each" }
 "~/.config/opencode" = { source = "config/opencode", mode = "symlink-each" }
+# Whole-dir symlink: LazyVim writes lazy-lock.json and lazyvim.json (extras)
+# back into the config, and those belong in git. Plugins live in stdpath("data").
+"~/.config/nvim" = "config/nvim"
 "~/.config/ponytail/config.json" = { source = "config/ponytail/config.json", variants = [{ os = "macos" }] }
 "~/AppData/Roaming/ponytail/config.json" = { source = "config/ponytail/config.json", variants = [{ os = "windows" }] }
-"~/.config/wezterm" = { source = "config/wezterm", mode = "symlink-each" }
+"~/.config/wezterm" = { source = "config/wezterm", mode = "symlink-each", variants = [{ os = "windows" }] }
 "~/.config/ghostty" = { source = "config/ghostty", mode = "symlink-each", variants = [{ os = "macos" }] }
 
 # VS Code keeps its user folder in a per-OS place; the files live in config/vscode.

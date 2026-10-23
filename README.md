@@ -63,7 +63,7 @@ whatever changed.
 mise.toml                 what links where ([dotfiles]) and the tasks: bootstrap, secrets, up, save
 config/mise/config.toml   tools, apps, macOS settings, zsh plugin repos
 home/                     links into ~         (.zshrc, .gitconfig, .claude/, .ssh/config)
-config/                   app configs linked by mise.toml (opencode, starship, git, wezterm, ghostty, vscode, powershell, ponytail)
+config/                   app configs linked by mise.toml (opencode, nvim, starship, git, wezterm, ghostty, vscode, powershell, ponytail)
 *.age                     secrets, encrypted, next to where they land
 scripts/                  install.sh + install.ps1 (the one-liners), dots.mjs (the glue, node)
 docs/
@@ -76,9 +76,9 @@ or `os =` on a package, never duplicated files.
 
 Edit **`config/mise/config.toml`**.
 
-- **CLI (mise):** node, pnpm, age, gh, fd, fzf, zoxide, starship, cloudflared, opencode
+- **CLI (mise):** node, pnpm, age, gh, fd, fzf, zoxide, starship, cloudflared, opencode, neovim
 - **MCP server (mise):** `@bytebase/dbhub`
-- **Apps + font:** VS Code, Brave, WezTerm, Ghostty, JetBrains Mono Nerd Font and hiddenbar (macOS) via brew casks; Git, PowerShell, VS Code, Brave, WezTerm and the font via winget on Windows
+- **Apps + font:** VS Code, Brave, Ghostty, JetBrains Mono Nerd Font and hiddenbar (macOS) via brew casks; Git, PowerShell, VS Code, Brave, WezTerm and the font via winget on Windows
 - **zsh:** autosuggestions + fast-syntax-highlighting, cloned to `~/.zsh/plugins` (PSReadLine on Windows)
 
 VS Code settings, profiles and extensions are managed here (Settings Sync is
@@ -93,5 +93,6 @@ off); Brave uses Brave Sync. macOS settings (Dock, Finder, dark mode) are
 | [docs/secrets.md](docs/secrets.md) | How the encrypted secrets and the age key work |
 | [docs/vscode.md](docs/vscode.md) | VS Code: profiles, extensions, the encrypted Work settings |
 | [docs/opencode.md](docs/opencode.md) | opencode: config and plugin rules |
+| [docs/neovim.md](docs/neovim.md) | Neovim: LazyVim defaults, extras, database connections |
 | [docs/cheatsheet.md](docs/cheatsheet.md) | Terminal keys, fzf, zoxide, git aliases and the rest |
 | [AGENTS.md](AGENTS.md) | Rules for agents editing this repo (`CLAUDE.md` is a symlink to it) |
