@@ -6,7 +6,6 @@
 home/.doti/*
 !home/.doti/*.age
 cleardbhub.toml
-insales-accounts.json
 .gitconfig.local
 key.txt
 debug.log

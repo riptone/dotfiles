@@ -6,6 +6,7 @@
 //   vscode        register profiles in VS Code's storage.json, install missing extensions (--prune: remove the rest)
 //   skills        install home/.agents/skills.json for Claude Code and opencode
 //   secrets       decrypt every *.age in the repo next to itself (home/.doti is linked by hand, see below) (asks for the key passphrase once)
+//   dbhub         generate ~/.doti/dbhub.toml from ~/.doti/connections.csv (`secrets` does it too)
 //   reencrypt     re-encrypt secrets whose decrypted copy changed on this machine
 //   save-lists    reencrypt, then rewrite config/vscode/profiles.json and home/.agents/skills.json
 import { execFileSync, spawnSync } from "node:child_process";
@@ -13,6 +14,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { generate } from "./dbhub.mjs";
 
 const repo = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const home = os.homedir();
@@ -196,18 +198,49 @@ const commands = {
 		}
 		for (const { rel, target } of secretFiles()) {
 			fs.mkdirSync(path.dirname(target), { recursive: true, mode: 0o700 });
+			// Decrypt to a side file so an edit not yet `save`d is kept as .bak
+			// instead of being overwritten. Only under ~: a .bak in the repo
+			// would not be git-ignored.
+			const tmp = target + ".tmp";
 			const r = run("age", [
 				"--decrypt",
 				"--identity",
 				key,
 				"--output",
-				target,
+				tmp,
 				path.join(repo, rel),
 			]);
-			if (r.status) throw new Error(`could not decrypt ${rel}`);
+			if (r.status) {
+				fs.rmSync(tmp, { force: true });
+				throw new Error(`could not decrypt ${rel}`);
+			}
+			if (
+				target.startsWith(home) &&
+				fs.existsSync(target) &&
+				!fs.readFileSync(target).equals(fs.readFileSync(tmp))
+			) {
+				fs.copyFileSync(target, target + ".bak");
+				fs.chmodSync(target + ".bak", 0o600);
+				console.log(`secrets: ${target} differed, old copy kept as .bak`);
+			}
+			fs.renameSync(tmp, target);
 			fs.chmodSync(target, 0o600);
 		}
 		console.log("secrets: decrypted");
+		commands.dbhub();
+	},
+
+	// dbhub.toml is derived from connections.csv, the one secret; never edit it.
+	dbhub() {
+		const dir = path.join(home, ".doti");
+		const csv = path.join(dir, "connections.csv");
+		if (!fs.existsSync(csv)) return;
+		const r = generate(csv, path.join(dir, "dbhub.toml"));
+		console.log(`dbhub: ${r.count} sources${r.changed ? ", dbhub.toml regenerated" : ", no change"}`);
+		if (r.added.length) console.log(`  + ${r.added.join(", ")}`);
+		if (r.removed.length) console.log(`  - ${r.removed.join(", ")}`);
+		if (r.changedDsn.length) console.log(`  ~ dsn changed: ${r.changedDsn.join(", ")}`);
+		for (const p of r.problems) console.log(`  ! skipped, ${p}`);
 	},
 
 	// Re-encrypt every secret whose decrypted copy changed here (an edit made in

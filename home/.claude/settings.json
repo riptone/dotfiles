@@ -79,7 +79,7 @@
       "effortLevel": "medium"
     },
     "claude-haiku-5-5": {
-      "effortLevel": "low"
+      "effortLevel": "medium"
     }
   },
   "autoUpdatesChannel": "latest",
